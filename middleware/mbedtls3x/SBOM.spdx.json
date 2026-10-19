@@ -1,0 +1,79 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "creationInfo": {
+    "created": "2026-06-04T11:45:00Z",
+    "creators": [
+      "Organization: NXP"
+    ],
+    "licenseListVersion": "3.26"
+  },
+  "name": "nxp_mbedtls-v26.06.00",
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://nxp.com/spdx/091cdb78-5ecc-434c-8e00-cbe758df5c7a",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-package-091cdb78-5ecc-434c-8e00-cbe758df5c7a",
+      "name": "nxp_mbedtls",
+      "versionInfo": "v26.06.00",
+      "licenseConcluded": "(Apache-2.0)",
+      "licenseDeclared": "(Apache-2.0)",
+      "downloadLocation": "https://github.com/NXP/nxp_mbedtls",
+      "originator": "Organization: NXP",
+      "supplier": "NOASSERTION",
+      "externalRefs": [],
+      "filesAnalyzed": false
+    },
+    {
+      "SPDXID": "SPDXRef-package-091cdb78-5ecc-434c-8e00-cbe758df5c7a---9fc3169d-de17-4fa5-a11e-6dbd7c9cc87c",
+      "name": "mbed TLS",
+      "versionInfo": "3.6.6",
+      "licenseConcluded": "(Apache-2.0 OR GPL-2.0-or-later)",
+      "licenseDeclared": "(Apache-2.0 OR GPL-2.0-or-later)",
+      "homepage": "https://www.trustedfirmware.org/",
+      "downloadLocation": "NOASSERTION",
+      "originator": "Organization: mbed-tls",
+      "supplier": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceLocator": "871dde9a-cbed-4096-8bcc-07295b309d2d",
+          "referenceType": "BlackDuck-ComponentOrigin"
+        },
+        {
+          "referenceCategory": "SECURITY",
+          "referenceLocator": "cpe:2.3:a:arm:mbed_tls:3.6.6:*:*:*:*:*:*:*",
+          "referenceType": "cpe23Type"
+        },
+        {
+          "referenceCategory": "SECURITY",
+          "referenceLocator": "cpe:2.3:a:mbed:mbedtls:3.6.6:*:*:*:*:*:*:*",
+          "referenceType": "cpe23Type"
+        },
+        {
+          "referenceCategory": "SECURITY",
+          "referenceLocator": "cpe:2.3:o:arm:mbed_tls:3.6.6:*:*:*:*:*:*:*",
+          "referenceType": "cpe23Type"
+        },
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:github/mbed-tls/mbedtls@v3.6.6",
+          "referenceType": "purl"
+        }
+      ],
+      "filesAnalyzed": false
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-package-091cdb78-5ecc-434c-8e00-cbe758df5c7a"
+    },
+    {
+      "spdxElementId": "SPDXRef-package-091cdb78-5ecc-434c-8e00-cbe758df5c7a",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-package-091cdb78-5ecc-434c-8e00-cbe758df5c7a---9fc3169d-de17-4fa5-a11e-6dbd7c9cc87c"
+    }
+  ]
+}

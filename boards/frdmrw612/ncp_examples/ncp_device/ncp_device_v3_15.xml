@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ksdk:examples xmlns:ksdk="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd manifest.xsd">
+  <externalDefinitions>
+    <definition extID="cm33_RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.common.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.extension.common.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.config.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.ble.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.ble.ethermind.lib.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.crypto.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.crypto.psa.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.platform.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.host_msd_fatfs.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.db_gen.ethermind.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.pal.host_msd_fatfs.ethermind.config.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting_DEPEND_ANYOF_OPTION_3.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.work_queue.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.toolchain.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.net.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.list.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.porting.atomic.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.common.ethermind.hci_platform.RW612"/>
+    <definition extID="middleware.edgefast_bluetooth.rw610.controller.RW612"/>
+    <definition extID="platform.drivers.flash_config.frdmrw612.RW612"/>
+    <definition extID="platform.drivers.clock.RW612"/>
+    <definition extID="platform.drivers.i2s_bridge.RW612"/>
+    <definition extID="platform.drivers.inputmux_connections.RW612"/>
+    <definition extID="platform.drivers.cns_io_mux.RW612"/>
+    <definition extID="platform.drivers.iped_rw61x.RW612"/>
+    <definition extID="platform.drivers.memory.RW612"/>
+    <definition extID="platform.drivers.ocotp_rw61x.RW612"/>
+    <definition extID="platform.drivers.power.RW612"/>
+    <definition extID="platform.drivers.reset.RW612"/>
+    <definition extID="CMSIS_Include_core_cm.RW612"/>
+    <definition extID="device.RW612_CMSIS.RW612"/>
+    <definition extID="device.RW612_system.RW612"/>
+    <definition extID="device.RW612_startup.RW612"/>
+    <definition extID="platform.drivers.cache_cache64.RW612"/>
+    <definition extID="platform.drivers.common.RW612"/>
+    <definition extID="platform.drivers.flexcomm.RW612"/>
+    <definition extID="platform.drivers.flexcomm_usart.RW612"/>
+    <definition extID="platform.drivers.flexcomm_spi_dma.RW612"/>
+    <definition extID="platform.drivers.flexcomm_spi.RW612"/>
+    <definition extID="platform.drivers.flexspi.RW612"/>
+    <definition extID="platform.drivers.gdma.RW612"/>
+    <definition extID="platform.drivers.imu.RW612"/>
+    <definition extID="platform.drivers.lpc_crc.RW612"/>
+    <definition extID="platform.drivers.lpc_dma.RW612"/>
+    <definition extID="platform.drivers.lpc_gpio.RW612"/>
+    <definition extID="platform.drivers.lpc_rtc.RW612"/>
+    <definition extID="platform.drivers.mrt.RW612"/>
+    <definition extID="platform.drivers.ostimer.RW612"/>
+    <definition extID="platform.drivers.sdu.RW612"/>
+    <definition extID="platform.drivers.trng.RW612"/>
+    <definition extID="platform.drivers.flexcomm_usart_freertos.RW612"/>
+    <definition extID="platform.utilities.assert.RW612"/>
+    <definition extID="platform.utilities.misc_utilities.RW612"/>
+    <definition extID="component.lists.RW612"/>
+    <definition extID="utility.str.RW612"/>
+    <definition extID="utility.debug_console.RW612"/>
+    <definition extID="component.log.RW612"/>
+    <definition extID="component.serial_manager.RW612"/>
+    <definition extID="component.serial_manager_uart.RW612"/>
+    <definition extID="component.mrt_adapter.RW612"/>
+    <definition extID="component.timer_manager.RW612"/>
+    <definition extID="component.ostimer_time_stamp_adapter.RW612"/>
+    <definition extID="component.usart_adapter.RW612"/>
+    <definition extID="component.wireless_imu_adapter.RW612"/>
+    <definition extID="component.osa_template_config.RW612"/>
+    <definition extID="component.osa.RW612"/>
+    <definition extID="component.osa_free_rtos.RW612"/>
+    <definition extID="component.wifi_bt_module.tx_pwr_limits.RW612"/>
+    <definition extID="component.wifi_bt_module.config.RW612"/>
+    <definition extID="component.wifi_bt_module.RW61X.RW612"/>
+    <definition extID="component.wifi_bt_module.board_frdm_rw61x.RW612"/>
+    <definition extID="component.els_pkc.doc.rw61x.RW612"/>
+    <definition extID="component.els_pkc.static_lib.rw61x.RW612"/>
+    <definition extID="component.els_pkc.aead.RW612"/>
+    <definition extID="component.els_pkc.aead_modes.RW612"/>
+    <definition extID="component.els_pkc.aes.RW612"/>
+    <definition extID="component.els_pkc.buffer.RW612"/>
+    <definition extID="component.els_pkc.cipher.RW612"/>
+    <definition extID="component.els_pkc.cipher_modes.RW612"/>
+    <definition extID="component.els_pkc.core.RW612"/>
+    <definition extID="component.els_pkc.ecc.RW612"/>
+    <definition extID="component.els_pkc.els_header_only.RW612"/>
+    <definition extID="component.els_pkc.els_common.RW612"/>
+    <definition extID="component.els_pkc.standalone_gdet.RW612"/>
+    <definition extID="component.els_pkc.els.RW612"/>
+    <definition extID="component.els_pkc.hash.RW612"/>
+    <definition extID="component.els_pkc.hashmodes.RW612"/>
+    <definition extID="component.els_pkc.hmac.RW612"/>
+    <definition extID="component.els_pkc.key.RW612"/>
+    <definition extID="component.els_pkc.mac.RW612"/>
+    <definition extID="component.els_pkc.mac_modes.RW612"/>
+    <definition extID="component.els_pkc.math.RW612"/>
+    <definition extID="component.els_pkc.memory.RW612"/>
+    <definition extID="component.els_pkc.padding.RW612"/>
+    <definition extID="component.els_pkc.pkc.RW612"/>
+    <definition extID="component.els_pkc.prng.RW612"/>
+    <definition extID="component.els_pkc.psa_driver.RW612"/>
+    <definition extID="component.els_pkc.random.RW612"/>
+    <definition extID="component.els_pkc.random_modes.RW612"/>
+    <definition extID="component.els_pkc.random_modes_ctr.RW612"/>
+    <definition extID="component.els_pkc.rsa.RW612"/>
+    <definition extID="component.els_pkc.session.RW612"/>
+    <definition extID="component.els_pkc.trng.RW612"/>
+    <definition extID="component.els_pkc.trng.type_rng4.RW612"/>
+    <definition extID="component.els_pkc.pre_processor.RW612"/>
+    <definition extID="component.els_pkc.data_integrity.RW612"/>
+    <definition extID="component.els_pkc.flow_protection.RW612"/>
+    <definition extID="component.els_pkc.param_integrity.RW612"/>
+    <definition extID="component.els_pkc.secure_counter.RW612"/>
+    <definition extID="component.els_pkc.RW612"/>
+    <definition extID="component.els_pkc.toolchain.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x_inf_header_only.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x_interface_files.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x_standalone_clib_gdet_sensor.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x.RW612"/>
+    <definition extID="component.psa_crypto_driver.RW612"/>
+    <definition extID="component.psa_crypto_driver.osal.RW612"/>
+    <definition extID="component.psa_crypto_driver.osal.selection.frtos.RW612"/>
+    <definition extID="component.psa_crypto_driver.osal.frtos.RW612"/>
+    <definition extID="component.psa_crypto_driver.mbedtls_thread_alt.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.oracle.rw61x.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.oracle.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.common.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.transparent.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.opaque.RW612"/>
+    <definition extID="component.psa_crypto_driver.els_pkc.RW612"/>
+    <definition extID="component.psa_crypto_driver.use_trng_compile_option.RW612"/>
+    <definition extID="component.power_manager_framework.RW612"/>
+    <definition extID="component.sdu_adapter.RW612"/>
+    <definition extID="component.mflash_offchip.RW612"/>
+    <definition extID="driver.conn_fwloader.RW612"/>
+    <definition extID="driver.conn_fwloader.fw_bin.RW612"/>
+    <definition extID="driver.conn_fwloader_ns.RW612"/>
+    <definition extID="middleware.wifi.template.RW612"/>
+    <definition extID="middleware.wifi.osa_free_rtos.RW612"/>
+    <definition extID="middleware.wifi.osa.RW612"/>
+    <definition extID="middleware.wifi.common_files.RW612"/>
+    <definition extID="middleware.wifi.net.RW612"/>
+    <definition extID="middleware.wifi.net_free_rtos.RW612"/>
+    <definition extID="middleware.wifi.net_free_rtos.iperf.RW612"/>
+    <definition extID="middleware.wifi.wifidriver.RW612"/>
+    <definition extID="middleware.wifi.wifidriver.softap.RW612"/>
+    <definition extID="middleware.wifi.RW612"/>
+    <definition extID="middleware.wifi.imu.RW612"/>
+    <definition extID="middleware.wifi.cli.RW612"/>
+    <definition extID="middleware.wifi.ncp_supp_wmcrypto.RW612"/>
+    <definition extID="middleware.usb.common_header.RW612"/>
+    <definition extID="middleware.usb.device.common_header.RW612"/>
+    <definition extID="middleware.usb.device_controller_ehci.RW612"/>
+    <definition extID="middleware.usb.device.ehci_config_header.RW612"/>
+    <definition extID="middleware.usb.device.controller.driver.RW612"/>
+    <definition extID="middleware.usb.device.stack.RW612"/>
+    <definition extID="middleware.usb.device.cdc.RW612"/>
+    <definition extID="middleware.usb.host.common_header.RW612"/>
+    <definition extID="middleware.usb.host_controller_ehci.RW612"/>
+    <definition extID="middleware.usb.host.ehci_config_header.RW612"/>
+    <definition extID="middleware.usb.host.stack.RW612"/>
+    <definition extID="middleware.usb.host_audio.RW612"/>
+    <definition extID="middleware.usb.host_cdc.RW612"/>
+    <definition extID="middleware.usb.host_hid.RW612"/>
+    <definition extID="middleware.usb.host_msd.RW612"/>
+    <definition extID="middleware.usb.host_phdc.RW612"/>
+    <definition extID="middleware.usb.host_printer.RW612"/>
+    <definition extID="middleware.fatfs.RW612"/>
+    <definition extID="middleware.fatfs.template_usb.RW612"/>
+    <definition extID="middleware.fatfs.usb.RW612"/>
+    <definition extID="middleware.littlefs.RW612"/>
+    <definition extID="middleware.wireless.framework.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.lowpower.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.ble.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.coex.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.ot.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.hdlc.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.lowpower_timer.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.RW612"/>
+    <definition extID="middleware.wireless.framework.platform.rw61x.RW612"/>
+    <definition extID="middleware.wireless.framework.function_lib.RW612"/>
+    <definition extID="middleware.wireless.framework.lowpower.RW612"/>
+    <definition extID="middleware.wireless.framework.file_system.RW612"/>
+    <definition extID="middleware.lwip.RW612"/>
+    <definition extID="middleware.lwip.sys_arch.dynamic.RW612"/>
+    <definition extID="middleware.lwip.apps.lwiperf.RW612"/>
+    <definition extID="middleware.lwip.apps.lwiperf.non_generated_lwipopts.RW612"/>
+    <definition extID="middleware.lwip.apps.httpsrv.RW612"/>
+    <definition extID="middleware.lwip.apps.mdns.RW612"/>
+    <definition extID="middleware.wireless.wpa_supplicant.rtos.RW612"/>
+    <definition extID="middleware.wireless.wpa_supplicant.rtos.hostapd.RW612"/>
+    <definition extID="middleware.mbedtls3x.crypto.no_psa.RW612"/>
+    <definition extID="middleware.mbedtls3x.crypto.RW612"/>
+    <definition extID="middleware.mbedtls3x.x509.RW612"/>
+    <definition extID="middleware.mbedtls3x.ssl.no_psa.RW612"/>
+    <definition extID="middleware.mbedtls3x.ssl.RW612"/>
+    <definition extID="middleware.mbedtls3x.RW612"/>
+    <definition extID="middleware.mbedtls3x.template.RW612"/>
+    <definition extID="middleware.mbedtls3x.port.config.RW612"/>
+    <definition extID="middleware.mbedtls3x.port.psa_crypto_config.RW612"/>
+    <definition extID="middleware.freertos-kernel.RW612"/>
+    <definition extID="middleware.freertos-kernel.heap_4.RW612"/>
+    <definition extID="middleware.freertos-kernel.config.RW612"/>
+    <definition extID="middleware.freertos-kernel.cm33_non_trustzone.RW612"/>
+    <definition extID="middleware.freertos-kernel.extension.RW612"/>
+    <definition extID="mcuxpresso"/>
+    <definition extID="com.nxp.mcuxpresso"/>
+    <definition extID="com.crt.advproject.config.exe.debug"/>
+    <definition extID="com.crt.advproject.config.exe.release"/>
+  </externalDefinitions>
+  <example id="frdmrw612_ncp_device" name="ncp_device" device_core="cm33_RW612" dependency="middleware.edgefast_bluetooth.pal.RW612 middleware.edgefast_bluetooth.common.ethermind.RW612 middleware.edgefast_bluetooth.extension.common.ethermind.RW612 middleware.edgefast_bluetooth.config.ethermind.RW612 middleware.edgefast_bluetooth.ble.ethermind.RW612 middleware.edgefast_bluetooth.ble.ethermind.lib.RW612 middleware.edgefast_bluetooth.pal.crypto.ethermind.RW612 middleware.edgefast_bluetooth.crypto.psa.RW612 middleware.edgefast_bluetooth.pal.platform.ethermind.RW612 middleware.edgefast_bluetooth.pal.host_msd_fatfs.ethermind.RW612 middleware.edgefast_bluetooth.pal.db_gen.ethermind.RW612 middleware.edgefast_bluetooth.pal.host_msd_fatfs.ethermind.config.RW612 middleware.edgefast_bluetooth.porting.RW612 middleware.edgefast_bluetooth.porting_DEPEND_ANYOF_OPTION_3.RW612 middleware.edgefast_bluetooth.porting.work_queue.RW612 middleware.edgefast_bluetooth.porting.toolchain.RW612 middleware.edgefast_bluetooth.porting.net.RW612 middleware.edgefast_bluetooth.porting.list.RW612 middleware.edgefast_bluetooth.porting.atomic.RW612 middleware.edgefast_bluetooth.common.ethermind.hci_platform.RW612 middleware.edgefast_bluetooth.rw610.controller.RW612 platform.drivers.flash_config.frdmrw612.RW612 platform.drivers.clock.RW612 platform.drivers.i2s_bridge.RW612 platform.drivers.inputmux_connections.RW612 platform.drivers.cns_io_mux.RW612 platform.drivers.iped_rw61x.RW612 platform.drivers.memory.RW612 platform.drivers.ocotp_rw61x.RW612 platform.drivers.power.RW612 platform.drivers.reset.RW612 CMSIS_Include_core_cm.RW612 device.RW612_CMSIS.RW612 device.RW612_system.RW612 device.RW612_startup.RW612 platform.drivers.cache_cache64.RW612 platform.drivers.common.RW612 platform.drivers.flexcomm.RW612 platform.drivers.flexcomm_usart.RW612 platform.drivers.flexcomm_spi_dma.RW612 platform.drivers.flexcomm_spi.RW612 platform.drivers.flexspi.RW612 platform.drivers.gdma.RW612 platform.drivers.imu.RW612 platform.drivers.lpc_crc.RW612 platform.drivers.lpc_dma.RW612 platform.drivers.lpc_gpio.RW612 platform.drivers.lpc_rtc.RW612 platform.drivers.mrt.RW612 platform.drivers.ostimer.RW612 platform.drivers.sdu.RW612 platform.drivers.trng.RW612 platform.drivers.flexcomm_usart_freertos.RW612 platform.utilities.assert.RW612 platform.utilities.misc_utilities.RW612 component.lists.RW612 utility.str.RW612 utility.debug_console.RW612 component.log.RW612 component.serial_manager.RW612 component.serial_manager_uart.RW612 component.mrt_adapter.RW612 component.timer_manager.RW612 component.ostimer_time_stamp_adapter.RW612 component.usart_adapter.RW612 component.wireless_imu_adapter.RW612 component.osa_template_config.RW612 component.osa.RW612 component.osa_free_rtos.RW612 component.wifi_bt_module.tx_pwr_limits.RW612 component.wifi_bt_module.config.RW612 component.wifi_bt_module.RW61X.RW612 component.wifi_bt_module.board_frdm_rw61x.RW612 component.els_pkc.doc.rw61x.RW612 component.els_pkc.static_lib.rw61x.RW612 component.els_pkc.aead.RW612 component.els_pkc.aead_modes.RW612 component.els_pkc.aes.RW612 component.els_pkc.buffer.RW612 component.els_pkc.cipher.RW612 component.els_pkc.cipher_modes.RW612 component.els_pkc.core.RW612 component.els_pkc.ecc.RW612 component.els_pkc.els_header_only.RW612 component.els_pkc.els_common.RW612 component.els_pkc.standalone_gdet.RW612 component.els_pkc.els.RW612 component.els_pkc.hash.RW612 component.els_pkc.hashmodes.RW612 component.els_pkc.hmac.RW612 component.els_pkc.key.RW612 component.els_pkc.mac.RW612 component.els_pkc.mac_modes.RW612 component.els_pkc.math.RW612 component.els_pkc.memory.RW612 component.els_pkc.padding.RW612 component.els_pkc.pkc.RW612 component.els_pkc.prng.RW612 component.els_pkc.psa_driver.RW612 component.els_pkc.random.RW612 component.els_pkc.random_modes.RW612 component.els_pkc.random_modes_ctr.RW612 component.els_pkc.rsa.RW612 component.els_pkc.session.RW612 component.els_pkc.trng.RW612 component.els_pkc.trng.type_rng4.RW612 component.els_pkc.pre_processor.RW612 component.els_pkc.data_integrity.RW612 component.els_pkc.flow_protection.RW612 component.els_pkc.param_integrity.RW612 component.els_pkc.secure_counter.RW612 component.els_pkc.RW612 component.els_pkc.toolchain.RW612 component.els_pkc.platform.rw61x_inf_header_only.RW612 component.els_pkc.platform.rw61x_interface_files.RW612 component.els_pkc.platform.rw61x_standalone_clib_gdet_sensor.RW612 component.els_pkc.platform.rw61x.RW612 component.psa_crypto_driver.RW612 component.psa_crypto_driver.osal.RW612 component.psa_crypto_driver.osal.selection.frtos.RW612 component.psa_crypto_driver.osal.frtos.RW612 component.psa_crypto_driver.mbedtls_thread_alt.RW612 component.psa_crypto_driver.els_pkc.oracle.rw61x.RW612 component.psa_crypto_driver.els_pkc.oracle.RW612 component.psa_crypto_driver.els_pkc.common.RW612 component.psa_crypto_driver.els_pkc.transparent.RW612 component.psa_crypto_driver.els_pkc.opaque.RW612 component.psa_crypto_driver.els_pkc.RW612 component.psa_crypto_driver.use_trng_compile_option.RW612 component.power_manager_framework.RW612 component.sdu_adapter.RW612 component.mflash_offchip.RW612 driver.conn_fwloader.RW612 driver.conn_fwloader.fw_bin.RW612 driver.conn_fwloader_ns.RW612 middleware.wifi.template.RW612 middleware.wifi.osa_free_rtos.RW612 middleware.wifi.osa.RW612 middleware.wifi.common_files.RW612 middleware.wifi.net.RW612 middleware.wifi.net_free_rtos.RW612 middleware.wifi.net_free_rtos.iperf.RW612 middleware.wifi.wifidriver.RW612 middleware.wifi.wifidriver.softap.RW612 middleware.wifi.RW612 middleware.wifi.imu.RW612 middleware.wifi.cli.RW612 middleware.wifi.ncp_supp_wmcrypto.RW612 middleware.usb.common_header.RW612 middleware.usb.device.common_header.RW612 middleware.usb.device_controller_ehci.RW612 middleware.usb.device.ehci_config_header.RW612 middleware.usb.device.controller.driver.RW612 middleware.usb.device.stack.RW612 middleware.usb.device.cdc.RW612 middleware.usb.host.common_header.RW612 middleware.usb.host_controller_ehci.RW612 middleware.usb.host.ehci_config_header.RW612 middleware.usb.host.stack.RW612 middleware.usb.host_audio.RW612 middleware.usb.host_cdc.RW612 middleware.usb.host_hid.RW612 middleware.usb.host_msd.RW612 middleware.usb.host_phdc.RW612 middleware.usb.host_printer.RW612 middleware.fatfs.RW612 middleware.fatfs.template_usb.RW612 middleware.fatfs.usb.RW612 middleware.littlefs.RW612 middleware.wireless.framework.RW612 middleware.wireless.framework.platform.lowpower.RW612 middleware.wireless.framework.platform.ble.RW612 middleware.wireless.framework.platform.coex.RW612 middleware.wireless.framework.platform.ot.RW612 middleware.wireless.framework.platform.hdlc.RW612 middleware.wireless.framework.platform.lowpower_timer.RW612 middleware.wireless.framework.platform.RW612 middleware.wireless.framework.platform.rw61x.RW612 middleware.wireless.framework.function_lib.RW612 middleware.wireless.framework.lowpower.RW612 middleware.wireless.framework.file_system.RW612 middleware.lwip.RW612 middleware.lwip.sys_arch.dynamic.RW612 middleware.lwip.apps.lwiperf.RW612 middleware.lwip.apps.lwiperf.non_generated_lwipopts.RW612 middleware.lwip.apps.httpsrv.RW612 middleware.lwip.apps.mdns.RW612 middleware.wireless.wpa_supplicant.rtos.RW612 middleware.wireless.wpa_supplicant.rtos.hostapd.RW612 middleware.mbedtls3x.crypto.no_psa.RW612 middleware.mbedtls3x.crypto.RW612 middleware.mbedtls3x.x509.RW612 middleware.mbedtls3x.ssl.no_psa.RW612 middleware.mbedtls3x.ssl.RW612 middleware.mbedtls3x.RW612 middleware.mbedtls3x.template.RW612 middleware.mbedtls3x.port.config.RW612 middleware.mbedtls3x.port.psa_crypto_config.RW612 middleware.freertos-kernel.RW612 middleware.freertos-kernel.heap_4.RW612 middleware.freertos-kernel.config.RW612 middleware.freertos-kernel.cm33_non_trustzone.RW612 middleware.freertos-kernel.extension.RW612" category="ncp_examples">
+    <projects>
+      <project type="com.crt.advproject.projecttype.exe" nature="org.eclipse.cdt.core.cnature"/>
+    </projects>
+    <memory>
+      <memoryBlock id="QSPI_FLASH_RW612" name="QSPI_FLASH" addr="08000000" size="03E00000" type="ExtFlash" access="RO"/>
+      <memoryBlock id="LITTLEFS_FLASH_region_RW612" name="LITTLEFS_FLASH_region" addr="0BE00000" size="00200000" type="Flash" access="RO"/>
+      <memoryBlock id="SRAM_RW612" name="SRAM" addr="20000000" size="00123000" type="RAM" access="RW"/>
+      <memoryBlock id="MBOX1_RW612" name="MBOX1" addr="41380000" size="00000488" type="RAM" access="RW"/>
+      <memoryBlock id="TXQ1_RW612" name="TXQ1" addr="41380488" size="00001000" type="RAM" access="RW"/>
+      <memoryBlock id="MBOX2_RW612" name="MBOX2" addr="443C0000" size="00000488" type="RAM" access="RW"/>
+      <memoryBlock id="TXQ23_RW612" name="TXQ23" addr="443C0488" size="00001080" type="RAM" access="RW"/>
+      <memoryBlock id="TXQ32_RW612" name="TXQ32" addr="443C1508" size="00001080" type="RAM" access="RW"/>
+    </memory>
+    <toolchainSettings>
+      <toolchainSetting id_refs="com.nxp.mcuxpresso">
+        <option id="gnu.c.compiler.option.preprocessor.def.symbols" type="stringList">
+          <value>MCUXPRESSO_SDK</value>
+          <value>FSL_SDK_DRIVER_QUICK_ACCESS_ENABLE=1</value>
+          <value>BT_PLATFORM</value>
+          <value>LWIP_HOOK_FILENAME='"lwip_default_hooks.h"'</value>
+          <value>CONFIG_WPA_SUPP_CRYPTO_MBEDTLS_PSA</value>
+          <value>MBEDTLS_USER_CONFIG_FILE='"mbedtls_config_client.h"'</value>
+          <value>EDGEFAST_BT_LITTLEFS_MFLASH</value>
+          <value>GATT_CLIENT</value>
+          <value>GATT_DB</value>
+          <value>USE_RTOS=1</value>
+          <value>PRINTF_ADVANCED_ENABLE=1</value>
+          <value>SDK_OS_FREE_RTOS</value>
+          <value>FSL_OSA_TASK_ENABLE=1</value>
+          <value>MCUX_ENABLE_TRNG_AS_ENTROPY_SEED</value>
+          <value>LFS_CONFIG=littlefs_config.h</value>
+          <value>CONFIG_HOSTAPD=0</value>
+          <value>SDK_DEBUGCONSOLE=1</value>
+          <value>MCUX_META_BUILD</value>
+          <value>HAL_UART_ADAPTER_LOWPOWER=1</value>
+          <value>CPU_RW612ETA2I</value>
+          <value>RW612_SERIES</value>
+          <value>OSA_USED</value>
+          <value>LFS_NO_INTRINSICS=1</value>
+          <value>LFS_NO_ERROR=1</value>
+          <value>LFS_THREADSAFE=1</value>
+          <value>CFG_BLE</value>
+          <value>LOG_ENABLE_ASYNC_MODE=1</value>
+          <value>LOG_MAX_ARGUMENT_COUNT=10</value>
+          <value>LOG_ENABLE_OVERWRITE=1</value>
+          <value>CONFIG_ARM=1</value>
+          <value>BOOT_HEADER_ENABLE=1</value>
+          <value>SERIAL_PORT_TYPE_UART=1</value>
+          <value>TIMER_PORT_TYPE_MRT=1</value>
+          <value>WIFI_BOARD_FRDM_RW61X</value>
+          <value>PSA_CRYPTO_DRIVER_THREAD_EN</value>
+          <value>PSA_CRYPTO_DRIVER_ELS_PKC</value>
+          <value>MBEDTLS_MCUX_USE_TRNG_AS_ENTROPY_SEED</value>
+          <value>GENERIC_LIST_LIGHT=1</value>
+          <value>MFLASH_FILE_BASEADDR=7340032</value>
+          <value>CONFIG_NXP_WIFI_SOFTAP_SUPPORT=1</value>
+          <value>RPMSG_ADAPTER_NON_BLOCKING_MODE=1</value>
+          <value>MBEDTLS_MCUX_ELS_PKC_API</value>
+          <value>PRINTF_FLOAT_ENABLE=1</value>
+          <value>SO_REUSE=1</value>
+          <value>MBEDTLS_CONFIG_FILE='"mcux_mbedtls_config.h"'</value>
+        </option>
+        <option id="com.crt.advproject.gas.hdrlib" type="enum">
+          <value>com.crt.advproject.gas.hdrlib.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gas.specs" type="enum">
+          <value>com.crt.advproject.gas.specs.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gcc.hdrlib" type="enum">
+          <value>com.crt.advproject.gcc.hdrlib.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gcc.specs" type="enum">
+          <value>com.crt.advproject.gcc.specs.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.link.gcc.hdrlib" type="enum">
+          <value>com.crt.advproject.gcc.link.hdrlib.newlibnano.nohost</value>
+        </option>
+        <option id="com.crt.advproject.link.fpu" type="enum">
+          <value>com.crt.advproject.link.fpu.fpv5sp.hard</value>
+        </option>
+        <option id="com.crt.advproject.link.memory.heapAndStack" type="string">
+          <value>&amp;Heap:Default;Default;0x400&amp;Stack:Default;Default;0x400</value>
+        </option>
+        <option id="gnu.c.link.option.other" type="stringList">
+          <value>-no-warn-rwx-segments</value>
+        </option>
+        <option id="gnu.c.link.option.group" type="boolean">
+          <value>true</value>
+        </option>
+        <option id="gnu.c.link.option.nostdlibs" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="gnu.c.compiler.option.optimization.flags" type="string">
+          <value>-fno-common</value>
+        </option>
+        <option id="com.crt.advproject.c.misc.dialect" type="enum">
+          <value>com.crt.advproject.misc.dialect.gnu99</value>
+        </option>
+        <option id="com.crt.advproject.gcc.fpu" type="enum">
+          <value>com.crt.advproject.gcc.fpu.fpv5sp.hard</value>
+        </option>
+        <option id="gnu.c.compiler.option.misc.other" type="string">
+          <value>-c -ffunction-sections -fdata-sections -fno-builtin -mcpu=cortex-m33+nodsp -fomit-frame-pointer</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.allwarn" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.toerrors" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="com.crt.advproject.gas.fpu" type="enum">
+          <value>com.crt.advproject.gas.fpu.fpv5sp.hard</value>
+        </option>
+      </toolchainSetting>
+    </toolchainSettings>
+    <debug_configurations>
+      <debug_configuration id_refs="com.crt.advproject.config.exe.debug com.crt.advproject.config.exe.release">
+        <drivers>
+          <driver id_refs="QSPI_FLASH_RW612">
+            <driverBinary path="../../../../devices/RW612/mcuxpresso" project_relative_path="binary" type="binary">
+              <files mask="RW61X_FlexSPI_A_SFDP_QSPI.cfx"/>
+            </driverBinary>
+          </driver>
+          <driver id_refs="LITTLEFS_FLASH_region_RW612">
+            <driverBinary path="../../../../devices/RW612/mcuxpresso" project_relative_path="binary" type="binary">
+              <files mask="RW61X_FlexSPI_A_SFDP_QSPI.cfx"/>
+            </driverBinary>
+          </driver>
+        </drivers>
+      </debug_configuration>
+    </debug_configurations>
+    <include_paths>
+      <include_path path="ot" project_relative_path="source/ot" type="c_include"/>
+      <include_path path="wifi" project_relative_path="source/wifi" type="c_include"/>
+      <include_path path="." project_relative_path="source" type="c_include"/>
+      <include_path path="ble" project_relative_path="source/ble" type="c_include"/>
+      <include_path path="ble/service" project_relative_path="source/ble/service" type="c_include"/>
+      <include_path path="ble/service/gatt_client" project_relative_path="source/ble/service/gatt_client" type="c_include"/>
+      <include_path path="ble/service/gatt_server" project_relative_path="source/ble/service/gatt_server" type="c_include"/>
+      <include_path path="mcuxpresso_config" project_relative_path="source/mcuxpresso_config" type="c_include"/>
+      <include_path path="." project_relative_path="board" type="c_include"/>
+      <include_path path="." project_relative_path="source" type="asm_include"/>
+    </include_paths>
+    <source path="linkscripts" project_relative_path="linkscripts" type="src" toolchain="mcuxpresso">
+      <files mask="main_data.ldt"/>
+      <files mask="main_text.ldt"/>
+      <files mask="end_text.ldt"/>
+      <files mask="symbols.ldt"/>
+      <files mask="noinit_noload_section.ldt"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="main.c"/>
+      <files mask="controller_coex_nxp.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="lwipopts.h"/>
+      <files mask="lwippools.h"/>
+      <files mask="lwiphooks.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="script">
+      <files mask="app_config.cmake"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_system.h"/>
+      <files mask="ncp_glue_system.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_system.c"/>
+      <files mask="ncp_glue_system.c"/>
+    </source>
+    <source path="wifi" project_relative_path="source/wifi" type="src">
+      <files mask="ncp_wifi.c"/>
+      <files mask="ncp_glue_wifi.c"/>
+    </source>
+    <source path="wifi" project_relative_path="source/wifi" type="c_include">
+      <files mask="ncp_wifi.h"/>
+      <files mask="ncp_glue_wifi.h"/>
+      <files mask="wifi_config.h"/>
+    </source>
+    <source path="ble" project_relative_path="source/ble" type="src">
+      <files mask="gap.c"/>
+      <files mask="gatt.c"/>
+      <files mask="l2cap.c"/>
+      <files mask="ncp_ble.c"/>
+      <files mask="ncp_glue_ble.c"/>
+    </source>
+    <source path="ble" project_relative_path="source/ble" type="c_include">
+      <files mask="ncp_ble.h"/>
+      <files mask="ncp_glue_ble.h"/>
+      <files mask="ble_config.h"/>
+    </source>
+    <source path="ble/service/gatt_server" project_relative_path="source/ble/service/gatt_server" type="src">
+      <files mask="peripheral_hrs.c"/>
+      <files mask="peripheral_hts.c"/>
+      <files mask="peripheral_ncs.c"/>
+      <files mask="peripheral_matter.c"/>
+    </source>
+    <source path="ble/service/gatt_server" project_relative_path="source/ble/service/gatt_server" type="c_include">
+      <files mask="peripheral_hrs.h"/>
+      <files mask="peripheral_hts.h"/>
+      <files mask="peripheral_ncs.h"/>
+      <files mask="peripheral_matter.h"/>
+    </source>
+    <source path="ble/service/gatt_client" project_relative_path="source/ble/service/gatt_client" type="src">
+      <files mask="central_hrc.c"/>
+      <files mask="central_htc.c"/>
+    </source>
+    <source path="ble/service/gatt_client" project_relative_path="source/ble/service/gatt_client" type="c_include">
+      <files mask="central_hrc.h"/>
+      <files mask="central_htc.h"/>
+    </source>
+    <source path="ble/service" project_relative_path="source/ble/service" type="src">
+      <files mask="bas.c"/>
+      <files mask="service.c"/>
+    </source>
+    <source path="ble/service" project_relative_path="source/ble/service" type="c_include">
+      <files mask="bas.h"/>
+      <files mask="service.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="mbedtls_device.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="mbedtls_device.h"/>
+      <files mask="key_cert.h"/>
+    </source>
+    <source path="ot/third_party" project_relative_path="source/ot/third_party" type="script">
+      <files mask="ot_config.cmake"/>
+    </source>
+    <source path="ot" project_relative_path="source/ot" type="src">
+      <files mask="peripherals.c"/>
+    </source>
+    <source path="ot" project_relative_path="source/ot" type="c_include">
+      <files mask="peripherals.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_cmd_common.h"/>
+      <files mask="ncp_cmd_system.h"/>
+      <files mask="ncp_cmd_wifi.h"/>
+      <files mask="ncp_cmd_ble.h"/>
+      <files mask="ncp_utils.h"/>
+      <files mask="app_notify.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_glue_common.c"/>
+      <files mask="ncp_utils.c"/>
+      <files mask="app_notify.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_adapter.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_pm.c"/>
+      <files mask="ncp_pm_sm.c"/>
+      <files mask="ncp_pm_action.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_pm.h"/>
+      <files mask="ncp_pm_sm.h"/>
+      <files mask="ncp_pm_action.h"/>
+      <files mask="ncp_pm_defs.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_pm_freertos_device.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_pm_os.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_tlv_adapter.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_tlv_adapter.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_intf_pm.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_intf_pm.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_intf_uart_device.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_intf_uart.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="usb_device_cdc_app.c"/>
+      <files mask="ncp_intf_usb_device_cdc.c"/>
+      <files mask="usb_device_descriptor.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="usb_device_cdc_app.h"/>
+      <files mask="ncp_intf_usb_device_cdc.h"/>
+      <files mask="usb_device_descriptor.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include" config="true">
+      <files mask="usb_device_config.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_intf_spi_slave.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_intf_spi_slave.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_intf_sdio.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_intf_sdio.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="littlefs_config.c"/>
+      <files mask="littlefs_adapter.c"/>
+      <files mask="ncp_config.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="littlefs_config.h"/>
+      <files mask="littlefs_adapter.h"/>
+      <files mask="ncp_config.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="mdns_service.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="mdns_service.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_crc_sw.c"/>
+      <files mask="ncp_crc_hw.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_crc.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="mbedtls_common.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="mbedtls_common.h"/>
+      <files mask="mbedtls_config_client.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_debug.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="ncp_log.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="ncp_log.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="jsmn.h"/>
+      <files mask="json_generator.h"/>
+      <files mask="json_parser.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="httpc.h"/>
+      <files mask="http-strings.h"/>
+      <files mask="serial_errno.h"/>
+      <files mask="serial_httpc.h"/>
+      <files mask="serial_network.h"/>
+      <files mask="serial_socket.h"/>
+      <files mask="https_mbedtls.h"/>
+      <files mask="websockets.h"/>
+      <files mask="wmstats.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="httpc.c"/>
+      <files mask="httpc_tests.c"/>
+      <files mask="https_mbedtls.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="json_generator.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="serial_httpc.c"/>
+      <files mask="serial_network.c"/>
+      <files mask="serial_socket.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="websockets.c"/>
+      <files mask="wslay_frame.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="wslay.h"/>
+      <files mask="wslay_frame.h"/>
+      <files mask="wslayver.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="httpsrv_fs_data.c"/>
+      <files mask="http_server.c"/>
+      <files mask="uap_prov.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="http_server.h"/>
+      <files mask="uap_prov.h"/>
+    </source>
+    <source path="wifi" project_relative_path="source/wifi" type="c_include">
+      <files mask="ncp_inet.h"/>
+    </source>
+    <source path="wifi" project_relative_path="source/wifi" type="src">
+      <files mask="ncp_inet.c"/>
+    </source>
+    <source path="mcuxpresso_config" project_relative_path="source/mcuxpresso_config" type="c_include">
+      <files mask="app_mcuxpresso_config.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include" config="true">
+      <files mask="FreeRTOSConfig.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="FreeRTOSConfigBoard.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_preinclude">
+      <files mask="app_config.h"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="board.h"/>
+      <files mask="clock_config.h"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="board.c"/>
+      <files mask="clock_config.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="pin_mux.c"/>
+      <files mask="hardware_init.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="pin_mux.h"/>
+      <files mask="app.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="board_lp.c"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="board_lp.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include" config="true">
+      <files mask="FreeRTOSConfig_Gen.h"/>
+      <files mask="ffconf_gen.h"/>
+      <files mask="fsl_os_abstraction_config.h"/>
+      <files mask="usb_device_config.h"/>
+      <files mask="usb_host_config.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_include">
+      <files mask="edgefast_bluetooth_audio_config.h"/>
+      <files mask="edgefast_bluetooth_config.h"/>
+      <files mask="fsl_debug_console_conf.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_preinclude">
+      <files mask="mcux_config.h"/>
+      <files mask="mcuxsdk_version.h"/>
+    </source>
+    <source path="." project_relative_path="doc" type="doc">
+      <files mask="example_board_readme.md"/>
+    </source>
+    <source path="." project_relative_path="doc" type="doc">
+      <files mask="examples_shared_readme.md"/>
+    </source>
+  </example>
+</ksdk:examples>

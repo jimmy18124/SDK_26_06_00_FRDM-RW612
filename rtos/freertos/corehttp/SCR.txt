@@ -1,0 +1,10 @@
+NXP Software Content Register
+
+Package: corehttp NXP integration layer
+Version: 3.1.1
+Outgoing License: BSD-3-Clause
+License File: LICENSE
+Type of Content: source code, header files
+Description and comments: C language HTTP client library designed for embedded platforms
+Release Location: https://github.com/nxp-mcuxpresso/corehttp
+Origin: NXP (BSD-3-Clause)

@@ -1,0 +1,16 @@
+/*
+ * Copyright 2025 NXP
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#ifndef _ZEPHYRMAP_GEN_H_
+#define _ZEPHYRMAP_GEN_H_
+
+// #define CONFIG_CBPRINTF_PACKAGE_LONGDOUBLE 0
+#define CONFIG_MP_MAX_NUM_CPUS 1
+#define CONFIG_SYS_CLOCK_TICKS_PER_SEC 100
+#define CONFIG_SYS_CLOCK_MAX_TIMEOUT_DAYS 365
+#define CONFIG_GEN_HAL_OSA_FREERTOS_MAX_TASK 10
+
+#endif /* _ZEPHYRMAP_GEN_H_ */

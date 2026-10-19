@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<workspace>
+  <batchBuild>
+    <batchDefinition>
+      <name>all</name>
+      <member>
+        <project>lpc_gpio_input_interrupt</project>
+        <configuration>flash_debug</configuration>
+      </member>
+      <member>
+        <project>lpc_gpio_input_interrupt</project>
+        <configuration>flash_release</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>flash_debug</name>
+      <member>
+        <project>lpc_gpio_input_interrupt</project>
+        <configuration>flash_debug</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>flash_release</name>
+      <member>
+        <project>lpc_gpio_input_interrupt</project>
+        <configuration>flash_release</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+  <project>
+    <path>$WS_DIR$/lpc_gpio_input_interrupt.ewp</path>
+  </project>
+</workspace>

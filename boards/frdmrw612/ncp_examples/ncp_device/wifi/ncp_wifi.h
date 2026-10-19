@@ -1,0 +1,20 @@
+/*
+ * Copyright 2024 NXP
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ * The BSD-3-Clause license can be found at https://spdx.org/licenses/BSD-3-Clause.html
+ */
+#ifndef _NCP_WIFI_H_
+#define _NCP_WIFI_H_
+
+
+int wifi_ncp_init(void);
+bool ncp_send_acc_process(void *data);
+void *ncp_send_acc_filter(void *data);
+
+/*If nvm is enabled, set lfs network to Wi-Fi driver.*/
+int ncp_wifi_set_nvm_network(void);
+
+void *ncp_buf_alloc(size_t size, uint32_t offset);
+void ncp_buf_free(void *buf);
+#endif /* _NCP_WIFI_H_ */

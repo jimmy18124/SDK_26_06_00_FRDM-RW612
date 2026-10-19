@@ -1,0 +1,22 @@
+# IAR build output and IDE-generated state
+**/iar/Debug/
+**/iar/Release/
+**/iar/flash_debug/
+**/iar/flash_release/
+**/iar/settings/
+
+# Other generated build trees and build metadata
+**/CMakeFiles/
+**/cmake-build-*/
+**/.ninja_deps
+**/.ninja_log
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/compile_commands.json
+
+# Toolchain-generated object and listing files inside IAR projects
+**/iar/**/*.o
+**/iar/**/*.out
+**/iar/**/*.sim
+**/iar/**/*.map
+**/iar/**/*.bin

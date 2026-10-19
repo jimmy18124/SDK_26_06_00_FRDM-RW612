@@ -1,0 +1,24 @@
+#include "memfault/ports/freertos/metrics.h"
+
+// This definition is used to track if this file has been included yet
+#define MEMFAULT_METRICS_HEARTBEAT_FREERTOS_CONFIG_DEF 1
+
+#define CPU_USAGE_PCT_SCALE_VALUE (100)
+
+MEMFAULT_METRICS_KEY_DEFINE_WITH_SCALE_VALUE(cpu_usage_pct, kMemfaultMetricType_Unsigned,
+                                             CPU_USAGE_PCT_SCALE_VALUE)
+#if MEMFAULT_FREERTOS_RUNTIME_STATS_MULTI_CORE_SPLIT
+MEMFAULT_METRICS_KEY_DEFINE_WITH_SCALE_VALUE(cpu1_usage_pct, kMemfaultMetricType_Unsigned,
+                                             CPU_USAGE_PCT_SCALE_VALUE)
+#endif
+
+#if MEMFAULT_FREERTOS_COLLECT_TIMER_STACK_FREE_BYTES
+MEMFAULT_METRICS_KEY_DEFINE(timer_task_stack_free_bytes, kMemfaultMetricType_Unsigned)
+#endif
+
+#if MEMFAULT_METRICS_THREADS_DEFAULTS
+MEMFAULT_METRICS_KEY_DEFINE_WITH_SCALE_VALUE(memory_idle_pct_max, kMemfaultMetricType_Unsigned,
+                                             MEMFAULT_METRICS_THREADS_MEMORY_SCALE_FACTOR)
+MEMFAULT_METRICS_KEY_DEFINE_WITH_SCALE_VALUE(memory_tmr_svc_pct_max, kMemfaultMetricType_Unsigned,
+                                             MEMFAULT_METRICS_THREADS_MEMORY_SCALE_FACTOR)
+#endif

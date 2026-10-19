@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ksdk:examples xmlns:ksdk="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd manifest.xsd">
+  <externalDefinitions>
+    <definition extID="cm33_RW612"/>
+    <definition extID="frdmrw612_tfm_psatest_s"/>
+    <definition extID="platform.drivers.flash_config.frdmrw612.RW612"/>
+    <definition extID="platform.drivers.clock.RW612"/>
+    <definition extID="platform.drivers.i2s_bridge.RW612"/>
+    <definition extID="platform.drivers.inputmux_connections.RW612"/>
+    <definition extID="platform.drivers.cns_io_mux.RW612"/>
+    <definition extID="platform.drivers.iped_rw61x.RW612"/>
+    <definition extID="platform.drivers.memory.RW612"/>
+    <definition extID="platform.drivers.ocotp_rw61x.RW612"/>
+    <definition extID="platform.drivers.power.RW612"/>
+    <definition extID="platform.drivers.reset.RW612"/>
+    <definition extID="CMSIS_Device_API_RTOS2.RW612"/>
+    <definition extID="CMSIS_Device_API_OSTick.RW612"/>
+    <definition extID="CMSIS_RTOS2_RTX.RW612"/>
+    <definition extID="CMSIS_Include_core_cm.RW612"/>
+    <definition extID="device.RW612_CMSIS.RW612"/>
+    <definition extID="device.RW612_system.RW612"/>
+    <definition extID="platform.drivers.cache_cache64.RW612"/>
+    <definition extID="platform.drivers.common.RW612"/>
+    <definition extID="platform.drivers.ctimer.RW612"/>
+    <definition extID="platform.drivers.flexcomm.RW612"/>
+    <definition extID="platform.drivers.flexcomm_usart.RW612"/>
+    <definition extID="platform.drivers.flexspi.RW612"/>
+    <definition extID="platform.drivers.lpc_gpio.RW612"/>
+    <definition extID="platform.utilities.assert_lite.RW612"/>
+    <definition extID="platform.utilities.misc_utilities.RW612"/>
+    <definition extID="utility.str.RW612"/>
+    <definition extID="utility.debug_console_lite.RW612"/>
+    <definition extID="component.usart_adapter.RW612"/>
+    <definition extID="component.els_pkc.buffer.RW612"/>
+    <definition extID="component.els_pkc.core.RW612"/>
+    <definition extID="component.els_pkc.els_header_only.RW612"/>
+    <definition extID="component.els_pkc.els_common.RW612"/>
+    <definition extID="component.els_pkc.standalone_gdet.RW612"/>
+    <definition extID="component.els_pkc.memory.RW612"/>
+    <definition extID="component.els_pkc.pre_processor.RW612"/>
+    <definition extID="component.els_pkc.data_integrity.RW612"/>
+    <definition extID="component.els_pkc.flow_protection.RW612"/>
+    <definition extID="component.els_pkc.param_integrity.RW612"/>
+    <definition extID="component.els_pkc.secure_counter.RW612"/>
+    <definition extID="component.els_pkc.toolchain.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x_inf_header_only.RW612"/>
+    <definition extID="component.els_pkc.platform.rw61x_standalone_clib_gdet_sensor.RW612"/>
+    <definition extID="driver.conn_fwloader_ns.RW612"/>
+    <definition extID="middleware.tfm.board_headers.RW612"/>
+    <definition extID="middleware.tfm.driver_headers.RW612"/>
+    <definition extID="middleware.tfm.common_headers.RW612"/>
+    <definition extID="middleware.tfm.qcbor.RW612"/>
+    <definition extID="middleware.tfm.partition_init_attest.RW612"/>
+    <definition extID="middleware.tfm.s.protected_storage.RW612"/>
+    <definition extID="middleware.tfm.isolation_level_2.RW612"/>
+    <definition extID="middleware.tfm.s.isolation_2_cfg.RW612"/>
+    <definition extID="middleware.tfm.profile_large.RW612"/>
+    <definition extID="middleware.tfm.profile_large.client_configs.RW612"/>
+    <definition extID="middleware.tfm.profile_large.ns_psatest_configs.RW612"/>
+    <definition extID="middleware.tfm.ns.RW612"/>
+    <definition extID="middleware.tfm.ns.os_wrapper.rtos.RW612"/>
+    <definition extID="middleware.tfm.ns.board.RW612"/>
+    <definition extID="middleware.tfm.ns.loader_service.RW612"/>
+    <definition extID="middleware.tfm.ns.platform_rw61x.RW612"/>
+    <definition extID="middleware.tfmtests.ns.RW612"/>
+    <definition extID="middleware.tfm.ns.test.psatest_app.RW612"/>
+    <definition extID="middleware.psatest.ns.RW612"/>
+    <definition extID="middleware.psatest.ns.tgt_dev_apis_nxp.RW612"/>
+    <definition extID="middleware.psatest.ns.tgt_dev_apis_nxp_rw61x_configs.RW612"/>
+    <definition extID="middleware.psatest.ns.crypto.RW612"/>
+    <definition extID="middleware.psatest.ns.initial_attestation.RW612"/>
+    <definition extID="middleware.psatest.ns.t_cose.RW612"/>
+    <definition extID="middleware.psatest.ns.protected_storage.RW612"/>
+    <definition extID="middleware.psatest.ns.internal_trusted_storage.RW612"/>
+    <definition extID="iar"/>
+    <definition extID="mdk"/>
+    <definition extID="mcuxpresso"/>
+    <definition extID="com.nxp.mcuxpresso"/>
+    <definition extID="com.crt.advproject.config.exe.debug"/>
+    <definition extID="com.crt.advproject.config.exe.release"/>
+  </externalDefinitions>
+  <example id="frdmrw612_tfm_psatest_ns" name="tfm_psatest_ns" device_core="cm33_RW612" dependency="platform.drivers.flash_config.frdmrw612.RW612 platform.drivers.clock.RW612 platform.drivers.i2s_bridge.RW612 platform.drivers.inputmux_connections.RW612 platform.drivers.cns_io_mux.RW612 platform.drivers.iped_rw61x.RW612 platform.drivers.memory.RW612 platform.drivers.ocotp_rw61x.RW612 platform.drivers.power.RW612 platform.drivers.reset.RW612 CMSIS_Device_API_RTOS2.RW612 CMSIS_Device_API_OSTick.RW612 CMSIS_RTOS2_RTX.RW612 CMSIS_Include_core_cm.RW612 device.RW612_CMSIS.RW612 device.RW612_system.RW612 platform.drivers.cache_cache64.RW612 platform.drivers.common.RW612 platform.drivers.ctimer.RW612 platform.drivers.flexcomm.RW612 platform.drivers.flexcomm_usart.RW612 platform.drivers.flexspi.RW612 platform.drivers.lpc_gpio.RW612 platform.utilities.assert_lite.RW612 platform.utilities.misc_utilities.RW612 utility.str.RW612 utility.debug_console_lite.RW612 component.usart_adapter.RW612 component.els_pkc.buffer.RW612 component.els_pkc.core.RW612 component.els_pkc.els_header_only.RW612 component.els_pkc.els_common.RW612 component.els_pkc.standalone_gdet.RW612 component.els_pkc.memory.RW612 component.els_pkc.pre_processor.RW612 component.els_pkc.data_integrity.RW612 component.els_pkc.flow_protection.RW612 component.els_pkc.param_integrity.RW612 component.els_pkc.secure_counter.RW612 component.els_pkc.toolchain.RW612 component.els_pkc.platform.rw61x_inf_header_only.RW612 component.els_pkc.platform.rw61x_standalone_clib_gdet_sensor.RW612 driver.conn_fwloader_ns.RW612 middleware.tfm.board_headers.RW612 middleware.tfm.driver_headers.RW612 middleware.tfm.common_headers.RW612 middleware.tfm.qcbor.RW612 middleware.tfm.partition_init_attest.RW612 middleware.tfm.s.protected_storage.RW612 middleware.tfm.isolation_level_2.RW612 middleware.tfm.s.isolation_2_cfg.RW612 middleware.tfm.profile_large.RW612 middleware.tfm.profile_large.client_configs.RW612 middleware.tfm.profile_large.ns_psatest_configs.RW612 middleware.tfm.ns.RW612 middleware.tfm.ns.os_wrapper.rtos.RW612 middleware.tfm.ns.board.RW612 middleware.tfm.ns.loader_service.RW612 middleware.tfm.ns.platform_rw61x.RW612 middleware.tfmtests.ns.RW612 middleware.tfm.ns.test.psatest_app.RW612 middleware.psatest.ns.RW612 middleware.psatest.ns.tgt_dev_apis_nxp.RW612 middleware.psatest.ns.tgt_dev_apis_nxp_rw61x_configs.RW612 middleware.psatest.ns.crypto.RW612 middleware.psatest.ns.initial_attestation.RW612 middleware.psatest.ns.t_cose.RW612 middleware.psatest.ns.protected_storage.RW612 middleware.psatest.ns.internal_trusted_storage.RW612" linked_projects="frdmrw612_tfm_psatest_s" category="tfm_examples">
+    <projects>
+      <project type="com.crt.advproject.projecttype.exe" nature="org.eclipse.cdt.core.cnature"/>
+    </projects>
+    <memory>
+      <memoryBlock id="QSPI_FLASH_RW612" name="QSPI_FLASH" addr="08000000" size="00300000" type="ExtFlash" access="RO"/>
+      <memoryBlock id="SRAM_RW612" name="SRAM" addr="20000000" size="000F0000" type="RAM" access="RW"/>
+    </memory>
+    <toolchainSettings>
+      <toolchainSetting id_refs="com.nxp.mcuxpresso">
+        <buildSteps>
+          <preBuildStep>arm-none-eabi-gcc -DRW612_SERIES -E -P -xc -I ../tf-m/platform/ext/target/nxp/frdmrw612/partition -I ../tf-m/platform/ext/common ../tf-m/platform/ext/common/gcc/tfm_common_ns.ld -o ../tf-m/platform/ext/common/gcc/tfm_common_ns_pre.ld</preBuildStep>
+        </buildSteps>
+        <option id="com.crt.advproject.link.nonsecureobject" type="stringList">
+          <value>${workspace_loc:/${linked:frdmrw612_tfm_psatest_s}/${config_name:${ProjName}}/${linked:frdmrw612_tfm_psatest_s}_CMSE_lib.o}</value>
+        </option>
+        <option id="com.crt.advproject.gcc.exe.debug.option.optimization.level" type="enum">
+          <value>gnu.c.optimization.level.optimize</value>
+        </option>
+        <option id="gnu.c.compiler.option.optimization.flags" type="string">
+          <value>-fno-common</value>
+        </option>
+        <option id="com.crt.advproject.c.misc.dialect" type="enum">
+          <value>com.crt.advproject.misc.dialect.gnu99</value>
+        </option>
+        <option id="com.crt.advproject.gcc.fpu" type="enum">
+          <value>com.crt.advproject.gcc.fpu.fpv5sp.hard</value>
+        </option>
+        <option id="gnu.c.compiler.option.misc.other" type="string">
+          <value>-D __SEMIHOST_HARDFAULT_DISABLE -Wno-unused-variable -Wno-unused-but-set-variable -Wno-return-type -Wno-bool-operation -Wno-implicit-function-declaration -c -ffunction-sections -fdata-sections -fno-builtin -mcpu=cortex-m33+nodsp</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.allwarn" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.toerrors" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="gnu.c.compiler.option.preprocessor.def.symbols" type="stringList">
+          <value>NDEBUG</value>
+          <value>MCUXPRESSO_SDK</value>
+          <value>FSL_SDK_DRIVER_QUICK_ACCESS_ENABLE=1</value>
+          <value>PLATFORM_HAS_ATTEST_PK</value>
+          <value>OS_DYNAMIC_MEM_SIZE=7168</value>
+          <value>PSA_API_TEST_NS=1</value>
+          <value>SDK_DEBUGCONSOLE=1</value>
+          <value>MCUX_META_BUILD</value>
+          <value>CPU_RW612ETA2I</value>
+          <value>RW612_SERIES</value>
+          <value>BOOT_HEADER_ENABLE=1</value>
+          <value>CMSIS_device_header='"fsl_device_registers.h"'</value>
+          <value>RTE_COMPONENTS_H</value>
+          <value>TARGET_CONFIG_HEADER_FILE='"config_tfm_target.h"'</value>
+          <value>QCBOR_DISABLE_FLOAT_HW_USE</value>
+          <value>USEFULBUF_DISABLE_ALL_FLOAT</value>
+          <value>QCBOR_DISABLE_PREFERRED_FLOAT</value>
+          <value>TFM_ISOLATION_LEVEL=2</value>
+          <value>CONFIG_TFM_PARTITION_META</value>
+          <value>CONFIG_TFM_SPM_BACKEND_IPC=1</value>
+          <value>PROJECT_CONFIG_HEADER_FILE='"config_profile_large.h"'</value>
+          <value>MBEDTLS_CONFIG_FILE='"tfm_mbedcrypto_config_profile_large_client.h"'</value>
+          <value>TF_M_PROFILE_LARGE</value>
+          <value>CONFIG_TFM_FLOAT_ABI=2</value>
+          <value>CONFIG_TFM_ENABLE_CP10CP11</value>
+          <value>CONFIG_TFM_LAZY_STACKING</value>
+          <value>__DOMAIN_NS=1</value>
+          <value>DOMAIN_NS=1</value>
+          <value>CONFIG_TFM_USE_TRUSTZONE</value>
+          <value>ATTEST_TOKEN_PROFILE_PSA_IOT_1</value>
+          <value>PLATFORM_DEFAULT_CRYPTO_KEYS</value>
+          <value>PS_ENCRYPTION</value>
+          <value>DISABLE_ECC_R1_CURVE_TESTS_LESS_THAN_255_BITS</value>
+          <value>CRYPTO</value>
+          <value>INITIAL_ATTESTATION</value>
+          <value>PROTECTED_STORAGE</value>
+          <value>PS_TEST</value>
+          <value>INTERNAL_TRUSTED_STORAGE</value>
+          <value>ITS_TEST</value>
+        </option>
+        <option id="com.crt.advproject.gas.hdrlib" type="enum">
+          <value>com.crt.advproject.gas.hdrlib.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gas.specs" type="enum">
+          <value>com.crt.advproject.gas.specs.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gcc.hdrlib" type="enum">
+          <value>com.crt.advproject.gcc.hdrlib.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.gcc.specs" type="enum">
+          <value>com.crt.advproject.gcc.specs.newlibnano</value>
+        </option>
+        <option id="com.crt.advproject.link.gcc.hdrlib" type="enum">
+          <value>com.crt.advproject.gcc.link.hdrlib.newlibnano.semihost</value>
+        </option>
+        <option id="com.crt.advproject.link.securestate" type="enum">
+          <value>com.crt.advproject.link.securestate.nonsecure</value>
+        </option>
+        <option id="com.crt.advproject.link.fpu" type="enum">
+          <value>com.crt.advproject.link.fpu.fpv5sp.hard</value>
+        </option>
+        <option id="gnu.c.link.option.other" type="stringList">
+          <value>--no-warn-rwx-segment</value>
+          <value>-no-warn-rwx-segments</value>
+        </option>
+        <option id="gnu.c.link.option.ldflags" type="string">
+          <value>--specs=nosys.specs</value>
+        </option>
+        <option id="gnu.c.link.option.group" type="boolean">
+          <value>true</value>
+        </option>
+        <option id="gnu.c.link.option.nostdlibs" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="com.crt.advproject.gas.fpu" type="enum">
+          <value>com.crt.advproject.gas.fpu.fpv5sp.hard</value>
+        </option>
+      </toolchainSetting>
+    </toolchainSettings>
+    <debug_configurations>
+      <debug_configuration id_refs="com.crt.advproject.config.exe.debug com.crt.advproject.config.exe.release">
+        <drivers>
+          <driver id_refs="QSPI_FLASH_RW612">
+            <driverBinary path="../../../../../devices/RW612/mcuxpresso" project_relative_path="binary" type="binary">
+              <files mask="RW61X_FlexSPI_A_SFDP_QSPI.cfx"/>
+            </driverBinary>
+          </driver>
+        </drivers>
+      </debug_configuration>
+    </debug_configurations>
+    <include_paths>
+      <include_path path="." project_relative_path="source" type="c_include"/>
+      <include_path path="." project_relative_path="board" type="c_include"/>
+      <include_path path="." project_relative_path="source" type="asm_include"/>
+    </include_paths>
+    <source path="iar" project_relative_path="./" type="workspace" toolchain="iar">
+      <files mask="tfm_psatest_ns.ewp"/>
+      <files mask="tfm_psatest_ns.ewd"/>
+      <files mask="tfm_psatest_ns.eww"/>
+    </source>
+    <source path="mdk" project_relative_path="./" type="workspace" toolchain="mdk">
+      <files mask="tfm_psatest_ns.uvprojx"/>
+      <files mask="tfm_psatest_ns.uvoptx"/>
+      <files mask="JLinkSettings.ini"/>
+      <files mask="tfm_psatest_ns.uvmpw"/>
+    </source>
+    <source path="iar" project_relative_path="frdmrw612" type="configuration" toolchain="iar">
+      <files mask="FlashFRDMRW612_FLEXSPI.board"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="board.h"/>
+      <files mask="clock_config.h"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="board.c"/>
+      <files mask="clock_config.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="pin_mux.h"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="pin_mux.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="hardware_init.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="app.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_preinclude">
+      <files mask="mcux_config.h"/>
+      <files mask="mcuxsdk_version.h"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/gcc" project_relative_path="tf-m/platform/ext/common/gcc" type="linker" toolchain="mcuxpresso" generated_during_build="true">
+      <files mask="tfm_common_ns_pre.ld"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/gcc" project_relative_path="tf-m/platform/ext/common/gcc" method="copy" type="other" toolchain="mcuxpresso">
+      <files mask="tfm_common_ns.ld"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/iar" project_relative_path="tf-m/platform/ext/common/iar" type="linker" toolchain="iar" generated_during_build="true">
+      <files mask="tfm_common_ns_pre.icf"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/iar" project_relative_path="tf-m/platform/ext/common/iar" method="copy" type="other" toolchain="iar">
+      <files mask="tfm_common_ns.icf"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/armclang" project_relative_path="tf-m/platform/ext/common/armclang" type="linker" toolchain="mdk" generated_during_build="true">
+      <files mask="tfm_common_ns_pre.sct"/>
+    </source>
+    <source path="../../../../../middleware/tfm/tf-m/platform/ext/common/armclang" project_relative_path="tf-m/platform/ext/common/armclang" method="copy" type="other" toolchain="mdk">
+      <files mask="tfm_common_ns.sct"/>
+    </source>
+  </example>
+</ksdk:examples>
