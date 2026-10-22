@@ -40,7 +40,7 @@ static const uint32_t s_tcp_sends_per_second = 20U;
 static const size_t s_tcp_bytes_per_send = 100U * 1024U;
 static const size_t s_tcp_chunk_size_bytes = 1U * 1024U;
 static const uint32_t s_tcp_send_timeout_ms = 3000U;
-static const uint32_t s_tcp_send_timeout_retries = 1U;
+static const uint32_t s_tcp_send_timeout_retries = 3U;
 static const uint8_t s_tcp_frame_header[4] = {0xA0U, 0xB0U, 0xC0U, 0xD0U};
 static const uint8_t s_tcp_frame_tail[4] = {0xAFU, 0xBFU, 0xCFU, 0xDFU};
 static uint8_t s_tcp_transmit_buffer[TCP_SEND_BUFFER_CAPACITY];
@@ -314,7 +314,25 @@ static void tcp_rx_task(void *param)
                 }
                 break;
             }
-            else if (errno != EWOULDBLOCK)
+            else if (errno == EWOULDBLOCK)
+            {
+                int socket_error = 0;
+                socklen_t error_length = sizeof(socket_error);
+
+                /* recv() timed out. Check whether TCP keepalive found a dead peer. */
+                if ((getsockopt(s_tcp_socket, SOL_SOCKET, SO_ERROR, &socket_error, &error_length) != 0) ||
+                    (socket_error != 0))
+                {
+                    if (tcp_connection_active())
+                    {
+                        PRINTF("[TCP] Idle connection lost, error=%d\r\n",
+                               (socket_error != 0) ? socket_error : errno);
+                        (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_IO_ERROR);
+                    }
+                    break;
+                }
+            }
+            else
             {
                 if (tcp_connection_active())
                 {
@@ -462,13 +480,13 @@ int socket_tasks_start(void)
         return -1;
     }
 
-    PRINTF("[TCP] Send config: %u sends/s, %u bytes/send, %u bytes/frame, %u frames/send, timeout=%u ms, retries=%u\r\n",
-           (unsigned int)s_tcp_sends_per_second,
-           (unsigned int)s_tcp_bytes_per_send,
-           (unsigned int)s_tcp_chunk_size_bytes,
-           (unsigned int)(s_tcp_bytes_per_send / s_tcp_chunk_size_bytes),
-           (unsigned int)s_tcp_send_timeout_ms,
-           (unsigned int)s_tcp_send_timeout_retries);
+    //PRINTF("[TCP] Send config: %u sends/s, %u bytes/send, %u bytes/frame, %u frames/send, timeout=%u ms, retries=%u\r\n",
+           //(unsigned int)s_tcp_sends_per_second,
+           //(unsigned int)s_tcp_bytes_per_send,
+           //(unsigned int)s_tcp_chunk_size_bytes,
+           //(unsigned int)(s_tcp_bytes_per_send / s_tcp_chunk_size_bytes),
+           //(unsigned int)s_tcp_send_timeout_ms,
+           //(unsigned int)s_tcp_send_timeout_retries);
 
     if (init_ipv4_address(&s_tcp_server_address, APP_TCP_SERVER_IP, APP_TCP_SERVER_PORT) != 0)
     {
