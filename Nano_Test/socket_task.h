@@ -11,7 +11,6 @@
 #include <stddef.h>
 
 int socket_tasks_start(void);
-int socket_tcp_send(const void *data, size_t length);
 int socket_udp_send(const void *data, size_t length);
 
 #endif /* SOCKET_TASK_H */

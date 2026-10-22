@@ -5782,9 +5782,6 @@
     </group>
     <group>
         <name>source</name>
-        <group>
-            <name>nano_wifi</name>
-        </group>
         <file>
             <name>$PROJ_DIR$\..\app.h</name>
         </file>
@@ -5829,9 +5826,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\pin_mux.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\shell_task_mode.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\socket_task.c</name>

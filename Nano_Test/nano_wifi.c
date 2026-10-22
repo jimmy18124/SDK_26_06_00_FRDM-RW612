@@ -23,7 +23,7 @@
 
 #define MAX_JSON_NETWORK_RECORD_LENGTH 185U
 
-#define WPL_SYNC_TIMEOUT_MS portMAX_DELAY
+#define WPL_SYNC_TIMEOUT_MS pdMS_TO_TICKS(30000U)
 
 #define UAP_NETWORK_NAME "uap-network"
 
@@ -78,7 +78,7 @@ typedef enum _wpl_state
 static wpl_state_t s_wplState            = WPL_NOT_INITIALIZED;
 static bool s_wplStaConnected            = false;
 #if UAP_SUPPORT
-static bool s_wplUapActivated            = false;
+static volatile bool s_wplUapActivated   = false;
 #endif
 static EventGroupHandle_t s_wplSyncEvent = NULL;
 static linkLostCb_t s_linkLostCb         = NULL;
@@ -192,9 +192,12 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             break;
 
         case WLAN_REASON_UAP_CLIENT_ASSOC:
-            PRINTF("[WIFI] SoftAP client associated: ");
-            print_mac((const char *)data);
-            PRINTF("\r\n");
+            if (data != NULL)
+            {
+                PRINTF("[WIFI] SoftAP client associated: ");
+                print_mac((const char *)data);
+                PRINTF("\r\n");
+            }
             break;
         case WLAN_REASON_UAP_CLIENT_CONN:
             if (data != NULL)
@@ -218,10 +221,12 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             break;
 
         case WLAN_REASON_UAP_START_FAILED:
+            s_wplUapActivated = false;
             break;
         case WLAN_REASON_UAP_STOP_FAILED:
             break;
         case WLAN_REASON_UAP_STOPPED:
+            s_wplUapActivated = false;
             break;
         default:
 #ifdef WPL_DEBUG
@@ -536,6 +541,34 @@ wpl_ret_t WPL_Stop_AP(void)
 #endif
 
     return status;
+}
+
+bool WPL_Is_AP_Active(void)
+{
+#if UAP_SUPPORT
+    return s_wplUapActivated;
+#else
+    return false;
+#endif
+}
+
+wpl_ret_t WPL_Prepare_AP_Restart(void)
+{
+#if UAP_SUPPORT
+    if (s_wplState != WPL_STARTED)
+    {
+        return WPLRET_NOT_READY;
+    }
+
+    dhcp_server_stop();
+    (void)wlan_stop_network(UAP_NETWORK_NAME);
+    (void)wlan_remove_network(UAP_NETWORK_NAME);
+    (void)xEventGroupClearBits(s_wplSyncEvent, WPL_SYNC_UAP_START_GROUP | WPL_SYNC_UAP_STOP_GROUP);
+    s_wplUapActivated = false;
+    return WPLRET_SUCCESS;
+#else
+    return WPLRET_FAIL;
+#endif
 }
 
 static int WLP_process_results(unsigned int count)

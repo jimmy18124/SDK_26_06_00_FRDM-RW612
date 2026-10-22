@@ -101,6 +101,12 @@ wpl_ret_t WPL_Start_AP(const char *ssid, const char *password, int chan, unsigne
  */
 wpl_ret_t WPL_Stop_AP(void);
 
+/** Return true while the SoftAP and its DHCP server are active. */
+bool WPL_Is_AP_Active(void);
+
+/** Remove stale SoftAP state before attempting to start it again. */
+wpl_ret_t WPL_Prepare_AP_Restart(void);
+
 /**
  * @brief  Scan for nearby Wi-Fi networks.
            Print available networks information and store them in an internal buffer in JSON fomrat.

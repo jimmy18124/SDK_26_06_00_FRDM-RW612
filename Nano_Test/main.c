@@ -5,9 +5,43 @@
 #include "fsl_debug_console.h"
 #include "nano_wifi.h"
 #include "socket_task.h"
+#include "wlan.h"
 
 #define MAIN_TASK_PRIORITY    1U
 #define MAIN_TASK_STACK_DEPTH 800U
+#define SOFTAP_MONITOR_INTERVAL_MS 1000U
+#define SOFTAP_RETRY_DELAY_MS      2000U
+
+enum
+{
+    FREERTOS_FAULT_NONE = 0U,
+    FREERTOS_FAULT_STACK_OVERFLOW,
+    FREERTOS_FAULT_MALLOC_FAILED
+};
+
+volatile uint32_t g_freertos_fault_code = FREERTOS_FAULT_NONE;
+TaskHandle_t volatile g_freertos_stack_overflow_task = NULL;
+const char *volatile g_freertos_stack_overflow_task_name = NULL;
+
+void vApplicationStackOverflowHook(TaskHandle_t task, char *task_name)
+{
+    g_freertos_stack_overflow_task      = task;
+    g_freertos_stack_overflow_task_name = task_name;
+    g_freertos_fault_code               = FREERTOS_FAULT_STACK_OVERFLOW;
+    taskDISABLE_INTERRUPTS();
+    for (;;)
+    {
+    }
+}
+
+void vApplicationMallocFailedHook(void)
+{
+    g_freertos_fault_code = FREERTOS_FAULT_MALLOC_FAILED;
+    taskDISABLE_INTERRUPTS();
+    for (;;)
+    {
+    }
+}
 
 static void print_separator(void)
 {
@@ -31,9 +65,11 @@ static void stop_on_error(const char *operation, wpl_ret_t error)
 static void main_task(void *param)
 {
     wpl_ret_t result;
+    int max_clients_result;
     unsigned int channel;
     unsigned int acs_band;
-    char softap_ip[16] = {0};
+    bool socket_tasks_started = false;
+    bool ap_cleanup_needed = false;
 
     (void)param;
 
@@ -52,6 +88,17 @@ static void main_task(void *param)
         stop_on_error("WPL_Start", result);
     }
 
+    max_clients_result = wlan_set_uap_max_clients(APP_SOFTAP_MAX_CLIENTS);
+    if (max_clients_result != WM_SUCCESS)
+    {
+        PRINTF("[ERROR] Failed to set SoftAP max clients: %d\r\n", max_clients_result);
+        for (;;)
+        {
+            vTaskDelay(pdMS_TO_TICKS(1000U));
+        }
+    }
+    PRINTF("[WIFI] SoftAP max clients: %u\r\n", (unsigned int)APP_SOFTAP_MAX_CLIENTS);
+
 #if 0
     channel  = 0U;
     acs_band = WPL_AP_ACS_BAND_5GHZ;
@@ -62,31 +109,51 @@ static void main_task(void *param)
     PRINTF("[WIFI] Starting SoftAP '%s', fixed channel %u\r\n", APP_SOFTAP_SSID, channel);
 #endif
 
-    result = WPL_Start_AP(APP_SOFTAP_SSID, APP_SOFTAP_PASSWORD, (int)channel, acs_band);
-    if (result != WPLRET_SUCCESS)
+    for (;;)
     {
-        stop_on_error("WPL_Start_AP", result);
-    }
-
-    if (WPL_GetIP(softap_ip, 0) == WPLRET_SUCCESS)
-    {
-        PRINTF("[WIFI] SoftAP ready: SSID=%s IP=%s\r\n", APP_SOFTAP_SSID, softap_ip);
-    }
-    else
-    {
-        PRINTF("[WIFI] SoftAP ready, IP query failed\r\n");
-    }
-
-    if (socket_tasks_start() != 0)
-    {
-        PRINTF("[ERROR] Failed to create socket tasks\r\n");
-        for (;;)
+        if (!WPL_Is_AP_Active())
         {
-            vTaskDelay(pdMS_TO_TICKS(1000U));
-        }
-    }
+            char softap_ip[16] = {0};
 
-    vTaskDelete(NULL);
+            if (ap_cleanup_needed)
+            {
+                (void)WPL_Prepare_AP_Restart();
+            }
+
+            result = WPL_Start_AP(APP_SOFTAP_SSID, APP_SOFTAP_PASSWORD, (int)channel, acs_band);
+            ap_cleanup_needed = true;
+            if (result != WPLRET_SUCCESS)
+            {
+                PRINTF("[WIFI] SoftAP start failed: %d; retrying in %u ms\r\n",
+                       (int)result, (unsigned int)SOFTAP_RETRY_DELAY_MS);
+                vTaskDelay(pdMS_TO_TICKS(SOFTAP_RETRY_DELAY_MS));
+                continue;
+            }
+
+            if (WPL_GetIP(softap_ip, 0) == WPLRET_SUCCESS)
+            {
+                PRINTF("[WIFI] SoftAP ready: SSID=%s IP=%s\r\n", APP_SOFTAP_SSID, softap_ip);
+            }
+            else
+            {
+                PRINTF("[WIFI] SoftAP ready, IP query failed\r\n");
+            }
+        }
+
+        if (!socket_tasks_started)
+        {
+            if (socket_tasks_start() != 0)
+            {
+                PRINTF("[ERROR] Failed to create socket tasks; retrying in %u ms\r\n",
+                       (unsigned int)SOFTAP_RETRY_DELAY_MS);
+                vTaskDelay(pdMS_TO_TICKS(SOFTAP_RETRY_DELAY_MS));
+                continue;
+            }
+            socket_tasks_started = true;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(SOFTAP_MONITOR_INTERVAL_MS));
+    }
 }
 
 int main(void)

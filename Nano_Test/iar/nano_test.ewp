@@ -340,7 +340,7 @@
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state>--preinclude $PROJ_DIR$/../mcuxsdk_version.h --diag_suppress=Pa082,Pa050</state>
+                    <state>--preinclude $PROJ_DIR$/../mcux_config.h --preinclude $PROJ_DIR$/../mcuxsdk_version.h --diag_suppress=Pa082,Pa050</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -376,7 +376,7 @@
                 </option>
                 <option>
                     <name>PreInclude</name>
-                    <state>$PROJ_DIR$/../mcux_config.h</state>
+                    <state>$PROJ_DIR$/../wifi_config.h</state>
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
@@ -1626,7 +1626,7 @@
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state>--preinclude $PROJ_DIR$/../mcuxsdk_version.h --diag_suppress=Pa082,Pa050</state>
+                    <state>--preinclude $PROJ_DIR$/../mcux_config.h --preinclude $PROJ_DIR$/../mcuxsdk_version.h --diag_suppress=Pa082,Pa050</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -1662,7 +1662,7 @@
                 </option>
                 <option>
                     <name>PreInclude</name>
-                    <state>$PROJ_DIR$/../mcux_config.h</state>
+                    <state>$PROJ_DIR$/../wifi_config.h</state>
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
@@ -4660,9 +4660,6 @@
     </group>
     <group>
         <name>source</name>
-        <group>
-            <name>nano_wifi</name>
-        </group>
         <file>
             <name>$PROJ_DIR$\..\app.h</name>
         </file>
@@ -4683,6 +4680,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\lwipopts.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\lwiphooks.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\lwippools.h</name>
@@ -4707,9 +4707,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\pin_mux.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\shell_task_mode.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\socket_task.c</name>
@@ -4922,6 +4919,12 @@
             <name>port</name>
             <group>
                 <name>net</name>
+                <group>
+                    <name>hooks</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\middleware\wifi_nxp\port\net\hooks\lwip_default_hooks.c</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\middleware\wifi_nxp\port\net\net.c</name>
                 </file>

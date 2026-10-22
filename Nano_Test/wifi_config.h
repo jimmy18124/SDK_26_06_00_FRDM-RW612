@@ -1,10 +1,3 @@
-/*
- *  Copyright 2020-2024 NXP
- *  All rights reserved.
- *
- *  SPDX-License-Identifier: BSD-3-Clause
- */
-
 #ifndef _WIFI_CONFIG_H_
 #define _WIFI_CONFIG_H_
 
@@ -12,15 +5,14 @@
 #include "wifi_bt_module_config.h"
 #endif
 
-#define CONFIG_IPV6 1
-#define CONFIG_MAX_IPV6_ADDRESSES 3
+#if defined(RW610)
+/* Match the SDK RW61x Wi-Fi high-throughput path. */
+#define CONFIG_TX_RX_ZERO_COPY 1
+#endif
 
-/* WLCMGR debug */
+#define CONFIG_IPV6 0
+#define CONFIG_MAX_IPV6_ADDRESSES 0
 #define CONFIG_WLCMGR_DEBUG 0
-
-/*
- * Wifi extra debug options
- */
 #define CONFIG_WIFI_EXTRA_DEBUG 0
 #define CONFIG_WIFI_EVENTS_DEBUG 0
 #define CONFIG_WIFI_CMD_RESP_DEBUG 0
@@ -39,10 +31,6 @@
 #define CONFIG_FW_VDLL_DEBUG 0
 #define CONFIG_DHCP_SERVER_DEBUG 0
 #define CONFIG_FWDNLD_IO_DEBUG 0
-
-/*
- * Heap debug options
- */
 #define CONFIG_HEAP_DEBUG 0
 #define CONFIG_HEAP_STAT 0
 

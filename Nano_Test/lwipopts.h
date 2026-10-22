@@ -37,11 +37,17 @@
  */
 #define NO_SYS 0
 
+#if CONFIG_LWIP_LOW_MEM_FOOTPRINT
+#define CONFIG_NETWORK_HIGH_PERF 0
+#define MAX_SOCKETS_TCP          4
+#define MAX_SOCKETS_UDP          5
+#else
 #define CONFIG_NETWORK_HIGH_PERF 1
+#define MAX_SOCKETS_TCP          8
+#define MAX_SOCKETS_UDP          10
+#endif
 
-#define MAX_SOCKETS_TCP           8
 #define MAX_LISTENING_SOCKETS_TCP 4
-#define MAX_SOCKETS_UDP           6
 #define TCP_SND_BUF_COUNT         2
 #define TCPIP_STACK_TX_HEAP_SIZE  0
 #define LWIP_COMPAT_SOCKETS       2
@@ -73,10 +79,10 @@ void sys_mark_tcpip_thread(void);
 #define LWIP_LOOPBACK_MAX_PBUFS            8
 
 #define TCPIP_THREAD_NAME      "tcp/ip"
-#define TCPIP_THREAD_STACKSIZE 768
-#define TCPIP_THREAD_PRIO      2
-#ifdef CONFIG_NETWORK_HIGH_PERF
-#define TCPIP_MBOX_SIZE 64
+#define TCPIP_THREAD_STACKSIZE 1024
+#define TCPIP_THREAD_PRIO      (configMAX_PRIORITIES - 3)
+#if CONFIG_NETWORK_HIGH_PERF
+#define TCPIP_MBOX_SIZE 96
 #else
 #define TCPIP_MBOX_SIZE 32
 #endif
@@ -86,21 +92,33 @@ void sys_mark_tcpip_thread(void);
  * NETCONN_RAW. The queue size value itself is platform-dependent, but is passed
  * to sys_mbox_new() when the recvmbox is created.
  */
+#if CONFIG_NETWORK_HIGH_PERF
+#define DEFAULT_RAW_RECVMBOX_SIZE 32
+#else
 #define DEFAULT_RAW_RECVMBOX_SIZE 12
+#endif
 
 /**
  * DEFAULT_UDP_RECVMBOX_SIZE: The mailbox size for the incoming packets on a
  * NETCONN_UDP. The queue size value itself is platform-dependent, but is passed
  * to sys_mbox_new() when the recvmbox is created.
  */
+#if CONFIG_NETWORK_HIGH_PERF
+#define DEFAULT_UDP_RECVMBOX_SIZE 32
+#else
 #define DEFAULT_UDP_RECVMBOX_SIZE 12
+#endif
 
 /**
  * DEFAULT_TCP_RECVMBOX_SIZE: The mailbox size for the incoming packets on a
  * NETCONN_TCP. The queue size value itself is platform-dependent, but is passed
  * to sys_mbox_new() when the recvmbox is created.
  */
+#if CONFIG_NETWORK_HIGH_PERF
+#define DEFAULT_TCP_RECVMBOX_SIZE 32
+#else
 #define DEFAULT_TCP_RECVMBOX_SIZE 12
+#endif
 
 /**
  * DEFAULT_ACCEPTMBOX_SIZE: The mailbox size for the incoming connections.
@@ -160,13 +178,17 @@ void sys_mark_tcpip_thread(void);
    ------------------------------------
 */
 
-#define MEM_ALIGNMENT 4
+#define MEM_ALIGNMENT 32
 
 /* Value of TCP_SND_BUF_COUNT denotes the number of buffers and is set by
  * CONFIG option available in the SDK
  */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
+#ifdef RW610
 #define TCP_SND_BUF (12 * TCP_MSS)
+#else
+#define TCP_SND_BUF (24 * TCP_MSS)
+#endif
 #else
 #define TCP_SND_BUF (TCP_SND_BUF_COUNT * TCP_MSS)
 #endif
@@ -193,9 +215,9 @@ void sys_mark_tcpip_thread(void);
 #define MEM_SIZE (TCPIP_STACK_TX_HEAP_SIZE * 1024)
 #endif
 
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
 #undef MEM_SIZE
-#define MEM_SIZE (20 * 1024)
+#define MEM_SIZE (40 * 1024)
 #endif
 
 /*
@@ -210,7 +232,7 @@ void sys_mark_tcpip_thread(void);
  * If the application sends a lot of data out of ROM (or other static memory),
  * this should be set high.
  */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
 #define MEMP_NUM_PBUF 20
 #else
 #define MEMP_NUM_PBUF 10
@@ -228,8 +250,12 @@ void sys_mark_tcpip_thread(void);
  * MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP segments.
  * (requires the LWIP_TCP option)
  */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
+#ifdef RW610
 #define MEMP_NUM_TCP_SEG 48
+#else
+#define MEMP_NUM_TCP_SEG 96
+#endif
 #else
 #define MEMP_NUM_TCP_SEG 12
 #endif
@@ -239,7 +265,7 @@ void sys_mark_tcpip_thread(void);
  * for incoming packets.
  * (only needed if you use tcpip.c)
  */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
 #define MEMP_NUM_TCPIP_MSG_INPKT 32
 #else
 #define MEMP_NUM_TCPIP_MSG_INPKT 16
@@ -248,8 +274,12 @@ void sys_mark_tcpip_thread(void);
 /** MEMP_NUM_TCPIP_MSG_*: the number of struct tcpip_msg, which is used
    for sequential API communication and incoming packets. Used in
    src/api/tcpip.c. */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
+#ifdef RW610
 #define MEMP_NUM_TCPIP_MSG_API 16
+#else
+#define MEMP_NUM_TCPIP_MSG_API 32
+#endif
 #else
 #define MEMP_NUM_TCPIP_MSG_API 8
 #endif
@@ -258,13 +288,13 @@ void sys_mark_tcpip_thread(void);
  * MEMP_NUM_SYS_TIMEOUT: the number of simulateously active timeouts.
  * (requires NO_SYS==0)
  */
-#define MEMP_NUM_SYS_TIMEOUT 12
+#define MEMP_NUM_SYS_TIMEOUT 20
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.
  * (only needed if you use the sequential API, like api_lib.c)
  */
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
 #define MEMP_NUM_NETBUF 32
 #else
 #define MEMP_NUM_NETBUF 16
@@ -283,7 +313,13 @@ void sys_mark_tcpip_thread(void);
 /**
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
+#if CONFIG_LWIP_LOW_MEM_FOOTPRINT
+#define PBUF_POOL_SIZE 20
+#elif FSL_USDHC_ENABLE_SCATTER_GATHER_TRANSFER
+#define PBUF_POOL_SIZE 64
+#else
 #define PBUF_POOL_SIZE 40
+#endif
 
 /*
    ----------------------------------
@@ -296,7 +332,14 @@ void sys_mark_tcpip_thread(void);
  * designed to accomodate single full size TCP frame in one pbuf, including
  * TCP_MSS, IP header, and link header.
  */
+#if CONFIG_TX_RX_ZERO_COPY
+#define PBUF_POOL_BUFSIZE 1752
+#elif FSL_USDHC_ENABLE_SCATTER_GATHER_TRANSFER
+#define PBUF_LINK_ENCAPSULATION_HLEN 26
+#define PBUF_POOL_BUFSIZE 2048
+#else
 #define PBUF_POOL_BUFSIZE 1580
+#endif
 
 /**
  * MEMP_NUM_FRAG_PBUF: the number of IP fragments simultaneously sent
@@ -311,7 +354,7 @@ void sys_mark_tcpip_thread(void);
  * MEMP_NUM_REASSDATA: the number of IP packets simultaneously queued for
  * reassembly (whole packets, not fragments!)
  */
-#define MEMP_NUM_REASSDATA 8
+#define MEMP_NUM_REASSDATA 2
 
 /**
  * IP_REASS_MAXAGE: Maximum time (in multiples of IP_TMR_INTERVAL - so seconds, normally)
@@ -328,7 +371,7 @@ void sys_mark_tcpip_thread(void);
  * When IPv4 *and* IPv6 are enabled, this even changes to
  * (PBUF_POOL_SIZE > 2 * IP_REASS_MAX_PBUFS)!
  */
-#define IP_REASS_MAX_PBUFS 16
+#define IP_REASS_MAX_PBUFS 7
 
 /**
  * TCP_MSS: TCP Maximum segment size. (default is 536, a conservative default,
@@ -357,7 +400,7 @@ void sys_mark_tcpip_thread(void);
 /**
  * LWIP_IPV6==1: Enable IPv6
  */
-#define LWIP_IPV6 1
+#define LWIP_IPV6 0
 
 #define LWIP_DNS_SECURE 0
 
@@ -386,8 +429,12 @@ void sys_mark_tcpip_thread(void);
  * TCP_WND: The size of a TCP window.  This must be at least
  * (2 * TCP_MSS) for things to work well
  **/
-#ifdef CONFIG_NETWORK_HIGH_PERF
+#if CONFIG_NETWORK_HIGH_PERF
+#ifdef RW610
 #define TCP_WND (15 * TCP_MSS)
+#else
+#define TCP_WND (32 * TCP_MSS)
+#endif
 #else
 #define TCP_WND (10 * TCP_MSS)
 #endif
@@ -406,6 +453,7 @@ void sys_mark_tcpip_thread(void);
  * LWIP_STATS==1: Enable statistics collection in lwip_stats.
  */
 #define LWIP_STATS 1
+#define LWIP_STATS_LARGE 1
 
 /**
  * LWIP_STATS_DISPLAY==1: Compile in the statistics output functions.
@@ -464,7 +512,6 @@ void sys_mark_tcpip_thread(void);
  * SO_RCVTIMEO processing.
  */
 #define LWIP_SO_RCVTIMEO 1
-#define LWIP_SO_SNDTIMEO 1
 /**
  * TCP_LISTEN_BACKLOG==1: Handle backlog connections.
  */
@@ -495,11 +542,33 @@ void sys_mark_tcpip_thread(void);
 
 #define LWIP_COMPAT_MUTEX_ALLOWED 1
 
+#define LWIP_CHECKSUM_ON_COPY 1
+#define LWIP_CHKSUM_ALGORITHM 3
+
 #if (LWIP_DNS || LWIP_IGMP || LWIP_IPV6) && !defined(LWIP_RAND)
 /* When using IGMP or IPv6, LWIP_RAND() needs to be defined to a random-function returning an u32_t random value*/
 #include "lwip/arch.h"
 u32_t lwip_rand(void);
 #define LWIP_RAND() lwip_rand()
 #endif
+
+#ifndef RW610
+#define LWIP_NETIF_TX_SINGLE_PBUF 1
+#if LWIP_NETIF_TX_SINGLE_PBUF
+#define PBUF_LINK_ENCAPSULATION_HLEN 26
+#endif
+#endif
+
+#define LWIP_NUM_NETIF_CLIENT_DATA 2
+
+#ifndef LWIP_HOOK_FILENAME
+#define LWIP_HOOK_FILENAME "lwiphooks.h"
+#endif
+
+#define LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, hdr, pcb, opts) lwip_hook_tcp_out_add_tcpopts(p, hdr, pcb, opts)
+#define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)                lwip_hook_ip4_route_src(src, dest)
+
+#define ARP_QUEUEING  1
+#define ARP_QUEUE_LEN 8
 
 #endif /* __LWIPOPTS_H__ */
