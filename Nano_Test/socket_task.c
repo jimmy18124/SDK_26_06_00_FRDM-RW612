@@ -12,39 +12,46 @@
 
 #define SOCKET_TASK_PRIORITY          (tskIDLE_PRIORITY + 2U)
 #define TCP_MANAGER_TASK_STACK_DEPTH  512U
-#define TCP_TX_TASK_STACK_DEPTH       1024U
+#define DATA_TX_TASK_STACK_DEPTH      1024U
 #define TCP_RX_TASK_STACK_DEPTH       1024U
 #define UDP_TASK_STACK_DEPTH          512U
 #define SOCKET_RETRY_DELAY_MS         1000U
 #define SOCKET_RECEIVE_TIMEOUT_MS     500U
 #define SOCKET_RECEIVE_BUFFER_SIZE    1500U
-#define TCP_SEND_BUFFER_CAPACITY      (4U * 1024U)
-#define TCP_FRAME_OVERHEAD_BYTES      16U
+#define DATA_SEND_BUFFER_CAPACITY     (4U * 1024U)
+#define DATA_FRAME_OVERHEAD_BYTES     16U
 
 #define TCP_EVENT_CONNECTED           (1U << 0)
 #define TCP_EVENT_IO_ERROR            (1U << 1)
 #define TCP_EVENT_TX_IDLE             (1U << 2)
 #define TCP_EVENT_RX_IDLE             (1U << 3)
-#define TCP_EVENT_WORKERS_IDLE        (TCP_EVENT_TX_IDLE | TCP_EVENT_RX_IDLE)
+
+#define UDP_EVENT_READY               (1U << 0)
+#define UDP_EVENT_IO_ERROR            (1U << 1)
+#define UDP_EVENT_TX_IDLE             (1U << 2)
 
 static volatile int s_tcp_socket = -1;
 static volatile int s_udp_socket = -1;
 static struct sockaddr_in s_tcp_server_address;
 static struct sockaddr_in s_udp_peer_address;
 static EventGroupHandle_t s_tcp_events;
-static TaskHandle_t s_tcp_tx_task;
+static EventGroupHandle_t s_udp_events;
+static TaskHandle_t s_data_tx_task;
 static TaskHandle_t s_tcp_rx_task;
+static int s_socket_tasks_started;
+/* Configure before socket_tasks_start(); do not switch transport while tasks are running. */
+static volatile uint32_t s_data_transport = APP_DATA_TRANSPORT;
 
-/* TCP traffic settings: rate, bytes per send, and bytes per socket write. */
-static const uint32_t s_tcp_sends_per_second = 20U;
-static const size_t s_tcp_bytes_per_send = 100U * 1024U;
-static const size_t s_tcp_chunk_size_bytes = 1U * 1024U;
-static const uint32_t s_tcp_send_timeout_ms = 1000U;
-static const uint32_t s_tcp_send_timeout_retries = 30U;
-static const uint32_t s_tcp_max_catch_up_blocks = 20U;
-static const uint8_t s_tcp_frame_header[4] = {0xA0U, 0xB0U, 0xC0U, 0xD0U};
-static const uint8_t s_tcp_frame_tail[4] = {0xAFU, 0xBFU, 0xCFU, 0xDFU};
-static uint8_t s_tcp_transmit_buffer[TCP_SEND_BUFFER_CAPACITY];
+/* Data traffic settings: rate, bytes per block, and bytes per frame. */
+static const uint32_t s_data_sends_per_second = 20U;
+static const size_t s_data_bytes_per_send = 100U * 1024U;
+static const size_t s_data_chunk_size_bytes = 1U * 1024U;
+static const uint32_t s_data_send_timeout_ms = 1000U;
+static const uint32_t s_data_send_timeout_retries = 30U;
+static const uint32_t s_data_max_catch_up_blocks = 20U;
+static const uint8_t s_data_frame_header[4] = {0xA0U, 0xB0U, 0xC0U, 0xD0U};
+static const uint8_t s_data_frame_tail[4] = {0xAFU, 0xBFU, 0xCFU, 0xDFU};
+static uint8_t s_data_transmit_buffer[DATA_SEND_BUFFER_CAPACITY];
 static uint8_t s_tcp_receive_buffer[SOCKET_RECEIVE_BUFFER_SIZE];
 static uint8_t s_udp_receive_buffer[SOCKET_RECEIVE_BUFFER_SIZE];
 
@@ -55,20 +62,59 @@ static int tcp_connection_active(void)
     return (s_tcp_events != NULL) && ((xEventGroupGetBits(s_tcp_events) & TCP_EVENT_CONNECTED) != 0U);
 }
 
-static int tcp_send_config_valid(void)
+static int udp_transport_active(void)
+{
+    return (s_udp_events != NULL) && ((xEventGroupGetBits(s_udp_events) & UDP_EVENT_READY) != 0U);
+}
+
+static int data_transport_is_tcp(void)
+{
+    return s_data_transport == APP_DATA_TRANSPORT_TCP;
+}
+
+static const char *data_transport_name(void)
+{
+    return data_transport_is_tcp() ? "TCP" : "UDP";
+}
+
+static EventBits_t tcp_worker_idle_bits(void)
+{
+    EventBits_t bits = TCP_EVENT_RX_IDLE;
+
+    if (data_transport_is_tcp())
+    {
+        bits |= TCP_EVENT_TX_IDLE;
+    }
+
+    return bits;
+}
+
+static int data_transport_active(void)
+{
+    return data_transport_is_tcp() ? tcp_connection_active() : udp_transport_active();
+}
+
+static int data_send_config_valid(void)
 {
     TickType_t ticks_per_second = pdMS_TO_TICKS(1000U);
 
-    if ((s_tcp_sends_per_second == 0U) || (s_tcp_sends_per_second > ticks_per_second) ||
-        (s_tcp_bytes_per_send == 0U) || (s_tcp_chunk_size_bytes < TCP_FRAME_OVERHEAD_BYTES) ||
-        (s_tcp_chunk_size_bytes > TCP_SEND_BUFFER_CAPACITY) ||
-        ((s_tcp_bytes_per_send % s_tcp_chunk_size_bytes) != 0U) ||
-        ((s_tcp_bytes_per_send / s_tcp_chunk_size_bytes) > UINT16_MAX))
+    if ((s_data_transport != APP_DATA_TRANSPORT_TCP) &&
+        (s_data_transport != APP_DATA_TRANSPORT_UDP))
     {
-        PRINTF("[TCP] Invalid send config: rate=%u size=%u chunk=%u\r\n",
-               (unsigned int)s_tcp_sends_per_second,
-               (unsigned int)s_tcp_bytes_per_send,
-               (unsigned int)s_tcp_chunk_size_bytes);
+        PRINTF("[DATA] Invalid transport: %u\r\n", (unsigned int)s_data_transport);
+        return 0;
+    }
+
+    if ((s_data_sends_per_second == 0U) || (s_data_sends_per_second > ticks_per_second) ||
+        (s_data_bytes_per_send == 0U) || (s_data_chunk_size_bytes < DATA_FRAME_OVERHEAD_BYTES) ||
+        (s_data_chunk_size_bytes > DATA_SEND_BUFFER_CAPACITY) ||
+        ((s_data_bytes_per_send % s_data_chunk_size_bytes) != 0U) ||
+        ((s_data_bytes_per_send / s_data_chunk_size_bytes) > UINT16_MAX))
+    {
+        PRINTF("[DATA] Invalid send config: rate=%u size=%u chunk=%u\r\n",
+               (unsigned int)s_data_sends_per_second,
+               (unsigned int)s_data_bytes_per_send,
+               (unsigned int)s_data_chunk_size_bytes);
         return 0;
     }
 
@@ -146,12 +192,12 @@ static int send_tcp_all(int socket_fd, const void *data, size_t length)
             continue;
         }
         else if ((sent < 0) && (errno == EWOULDBLOCK) &&
-                 (timeout_retries < s_tcp_send_timeout_retries))
+                 (timeout_retries < s_data_send_timeout_retries))
         {
             timeout_retries++;
             PRINTF("[TCP] Send backpressure; retry %u/%u\r\n",
                    (unsigned int)timeout_retries,
-                   (unsigned int)s_tcp_send_timeout_retries);
+                   (unsigned int)s_data_send_timeout_retries);
         }
         else
         {
@@ -162,18 +208,18 @@ static int send_tcp_all(int socket_fd, const void *data, size_t length)
     return 0;
 }
 
-static void build_tcp_frame(uint8_t *frame,
-                            size_t frame_size,
-                            uint32_t block_index,
-                            uint16_t frame_count,
-                            uint16_t frame_number)
+static void build_data_frame(uint8_t *frame,
+                             size_t frame_size,
+                             uint32_t block_index,
+                             uint16_t frame_count,
+                             uint16_t frame_number)
 {
     size_t offset = 0U;
     uint32_t network_block_index;
     uint16_t network_frame_value;
 
-    (void)memcpy(&frame[offset], s_tcp_frame_header, sizeof(s_tcp_frame_header));
-    offset += sizeof(s_tcp_frame_header);
+    (void)memcpy(&frame[offset], s_data_frame_header, sizeof(s_data_frame_header));
+    offset += sizeof(s_data_frame_header);
 
     network_block_index = htonl(block_index);
     (void)memcpy(&frame[offset], &network_block_index, sizeof(network_block_index));
@@ -186,23 +232,76 @@ static void build_tcp_frame(uint8_t *frame,
     network_frame_value = htons(frame_number);
     (void)memcpy(&frame[offset], &network_frame_value, sizeof(network_frame_value));
 
-    (void)memcpy(&frame[frame_size - sizeof(s_tcp_frame_tail)], s_tcp_frame_tail, sizeof(s_tcp_frame_tail));
+    (void)memcpy(&frame[frame_size - sizeof(s_data_frame_tail)], s_data_frame_tail, sizeof(s_data_frame_tail));
 }
 
 static int send_tcp_block(int socket_fd, uint32_t block_index)
 {
     uint32_t frame_index;
-    uint16_t frame_count = (uint16_t)(s_tcp_bytes_per_send / s_tcp_chunk_size_bytes);
+    uint16_t frame_count = (uint16_t)(s_data_bytes_per_send / s_data_chunk_size_bytes);
 
     for (frame_index = 0U; frame_index < frame_count; frame_index++)
     {
-        build_tcp_frame(s_tcp_transmit_buffer,
-                        s_tcp_chunk_size_bytes,
-                        block_index,
-                        frame_count,
-                        (uint16_t)(frame_index + 1U));
+        build_data_frame(s_data_transmit_buffer,
+                         s_data_chunk_size_bytes,
+                         block_index,
+                         frame_count,
+                         (uint16_t)(frame_index + 1U));
 
-        if (send_tcp_all(socket_fd, s_tcp_transmit_buffer, s_tcp_chunk_size_bytes) != 0)
+        if (send_tcp_all(socket_fd, s_data_transmit_buffer, s_data_chunk_size_bytes) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int send_udp_frame(int socket_fd, const void *data, size_t length)
+{
+    uint32_t timeout_retries = 0U;
+
+    for (;;)
+    {
+        ssize_t sent = sendto(socket_fd, data, length, 0, (const struct sockaddr *)&s_udp_peer_address,
+                              sizeof(s_udp_peer_address));
+
+        if (sent == (ssize_t)length)
+        {
+            return 0;
+        }
+        if ((sent < 0) && (errno == EINTR))
+        {
+            continue;
+        }
+        if ((sent < 0) && (errno == EWOULDBLOCK) &&
+            (timeout_retries < s_data_send_timeout_retries))
+        {
+            timeout_retries++;
+            PRINTF("[UDP] Send backpressure; retry %u/%u\r\n",
+                   (unsigned int)timeout_retries,
+                   (unsigned int)s_data_send_timeout_retries);
+            continue;
+        }
+
+        return -1;
+    }
+}
+
+static int send_udp_block(int socket_fd, uint32_t block_index)
+{
+    uint32_t frame_index;
+    uint16_t frame_count = (uint16_t)(s_data_bytes_per_send / s_data_chunk_size_bytes);
+
+    for (frame_index = 0U; frame_index < frame_count; frame_index++)
+    {
+        build_data_frame(s_data_transmit_buffer,
+                         s_data_chunk_size_bytes,
+                         block_index,
+                         frame_count,
+                         (uint16_t)(frame_index + 1U));
+
+        if (send_udp_frame(socket_fd, s_data_transmit_buffer, s_data_chunk_size_bytes) != 0)
         {
             return -1;
         }
@@ -239,13 +338,13 @@ static void handle_udp_data(const uint8_t *data, size_t length, const struct soc
            (unsigned int)ntohs(source->sin_port));
 }
 
-static void tcp_tx_task(void *param)
+static void data_tx_task(void *param)
 {
-    TickType_t send_interval_ticks = pdMS_TO_TICKS(1000U) / s_tcp_sends_per_second;
+    TickType_t send_interval_ticks = pdMS_TO_TICKS(1000U) / s_data_sends_per_second;
     uint32_t block_index = 0U;
 
     (void)param;
-    (void)memset(s_tcp_transmit_buffer, 0xA5, sizeof(s_tcp_transmit_buffer));
+    (void)memset(s_data_transmit_buffer, 0xA5, sizeof(s_data_transmit_buffer));
 
     for (;;)
     {
@@ -254,28 +353,40 @@ static void tcp_tx_task(void *param)
         uint32_t catch_up_blocks = 0U;
 
         (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_TX_IDLE);
+        (void)xEventGroupSetBits(s_udp_events, UDP_EVENT_TX_IDLE);
         (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         last_wake_tick = xTaskGetTickCount();
 
-        while (tcp_connection_active())
+        while (data_transport_active())
         {
-            if (send_tcp_block(s_tcp_socket, block_index) != 0)
+            int send_result = data_transport_is_tcp() ? send_tcp_block(s_tcp_socket, block_index) :
+                                                        send_udp_block(s_udp_socket, block_index);
+
+            if (send_result != 0)
             {
-                if (tcp_connection_active())
+                if (data_transport_active())
                 {
-                    PRINTF("[TCP] Data transmission failed, errno=%d\r\n", errno);
-                    (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_IO_ERROR);
+                    PRINTF("[%s] Data transmission failed, errno=%d\r\n", data_transport_name(), errno);
+                    if (data_transport_is_tcp())
+                    {
+                        (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_IO_ERROR);
+                    }
+                    else
+                    {
+                        (void)xEventGroupSetBits(s_udp_events, UDP_EVENT_IO_ERROR);
+                    }
                 }
                 break;
             }
 
             block_index++;
             sends_completed++;
-            if (sends_completed == s_tcp_sends_per_second)
+            if (sends_completed == s_data_sends_per_second)
             {
-                PRINTF("[TCP] Sent %u blocks (%u bytes)\r\n",
-                       (unsigned int)s_tcp_sends_per_second,
-                       (unsigned int)(s_tcp_sends_per_second * s_tcp_bytes_per_send));
+                PRINTF("[%s] Sent %u blocks (%u bytes)\r\n",
+                       data_transport_name(),
+                       (unsigned int)s_data_sends_per_second,
+                       (unsigned int)(s_data_sends_per_second * s_data_bytes_per_send));
                 sends_completed = 0U;
             }
 
@@ -286,7 +397,7 @@ static void tcp_tx_task(void *param)
                 if ((int32_t)(now_tick - next_wake_tick) > 0)
                 {
                     catch_up_blocks++;
-                    if (catch_up_blocks > s_tcp_max_catch_up_blocks)
+                    if (catch_up_blocks > s_data_max_catch_up_blocks)
                     {
                         last_wake_tick = now_tick;
                         catch_up_blocks = 0U;
@@ -365,7 +476,9 @@ static void tcp_connection_manager_task(void *param)
 
     for (;;)
     {
-        (void)xEventGroupWaitBits(s_tcp_events, TCP_EVENT_WORKERS_IDLE, pdFALSE, pdTRUE, portMAX_DELAY);
+        EventBits_t worker_idle_bits = tcp_worker_idle_bits();
+
+        (void)xEventGroupWaitBits(s_tcp_events, worker_idle_bits, pdFALSE, pdTRUE, portMAX_DELAY);
 
         s_tcp_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (s_tcp_socket < 0)
@@ -398,19 +511,22 @@ static void tcp_connection_manager_task(void *param)
         {
             PRINTF("[TCP] Failed to set receive timeout, errno=%d\r\n", errno);
         }
-        if (set_socket_timeout(s_tcp_socket, SO_SNDTIMEO, s_tcp_send_timeout_ms) != 0)
+        if (set_socket_timeout(s_tcp_socket, SO_SNDTIMEO, s_data_send_timeout_ms) != 0)
         {
             PRINTF("[TCP] Failed to set send timeout, errno=%d\r\n", errno);
         }
 
-        (void)xEventGroupClearBits(s_tcp_events, TCP_EVENT_IO_ERROR | TCP_EVENT_WORKERS_IDLE);
+        (void)xEventGroupClearBits(s_tcp_events, TCP_EVENT_IO_ERROR | worker_idle_bits);
         (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_CONNECTED);
-        (void)xTaskNotifyGive(s_tcp_tx_task);
+        if (data_transport_is_tcp())
+        {
+            (void)xTaskNotifyGive(s_data_tx_task);
+        }
         (void)xTaskNotifyGive(s_tcp_rx_task);
         (void)xEventGroupWaitBits(s_tcp_events, TCP_EVENT_IO_ERROR, pdFALSE, pdTRUE, portMAX_DELAY);
         (void)xEventGroupClearBits(s_tcp_events, TCP_EVENT_CONNECTED);
         (void)shutdown(s_tcp_socket, SHUT_RDWR);
-        (void)xEventGroupWaitBits(s_tcp_events, TCP_EVENT_WORKERS_IDLE, pdFALSE, pdTRUE, portMAX_DELAY);
+        (void)xEventGroupWaitBits(s_tcp_events, worker_idle_bits, pdFALSE, pdTRUE, portMAX_DELAY);
         close_socket(&s_tcp_socket);
         PRINTF("[TCP] Disconnected; reconnecting in %u ms\r\n", (unsigned int)SOCKET_RETRY_DELAY_MS);
         vTaskDelay(pdMS_TO_TICKS(SOCKET_RETRY_DELAY_MS));
@@ -431,6 +547,10 @@ static void udp_task(void *param)
 
     for (;;)
     {
+        if (!data_transport_is_tcp())
+        {
+            (void)xEventGroupWaitBits(s_udp_events, UDP_EVENT_TX_IDLE, pdFALSE, pdTRUE, portMAX_DELAY);
+        }
         s_udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
         if (s_udp_socket < 0)
         {
@@ -453,16 +573,39 @@ static void udp_task(void *param)
         {
             PRINTF("[UDP] Failed to set receive timeout, errno=%d\r\n", errno);
         }
+        if (set_socket_timeout(s_udp_socket, SO_SNDTIMEO, s_data_send_timeout_ms) != 0)
+        {
+            PRINTF("[UDP] Failed to set send timeout, errno=%d\r\n", errno);
+        }
 
         PRINTF("[UDP] Listening on 0.0.0.0:%u; peer=%s:%u (socket=%d)\r\n",
                (unsigned int)APP_UDP_LOCAL_PORT, APP_UDP_PEER_IP, (unsigned int)APP_UDP_PEER_PORT, s_udp_socket);
+
+        if (!data_transport_is_tcp())
+        {
+            (void)xEventGroupClearBits(s_udp_events, UDP_EVENT_IO_ERROR | UDP_EVENT_TX_IDLE);
+        }
+        (void)xEventGroupSetBits(s_udp_events, UDP_EVENT_READY);
+        if (!data_transport_is_tcp())
+        {
+            (void)xTaskNotifyGive(s_data_tx_task);
+        }
 
         for (;;)
         {
             struct sockaddr_in source_address;
             socklen_t source_length = sizeof(source_address);
-            int received = recvfrom(s_udp_socket, s_udp_receive_buffer, sizeof(s_udp_receive_buffer), 0,
-                                    (struct sockaddr *)&source_address, &source_length);
+            int received;
+
+            if (!data_transport_is_tcp() &&
+                ((xEventGroupGetBits(s_udp_events) & UDP_EVENT_IO_ERROR) != 0U))
+            {
+                PRINTF("[UDP] Send path failed; recreating socket\r\n");
+                break;
+            }
+
+            received = recvfrom(s_udp_socket, s_udp_receive_buffer, sizeof(s_udp_receive_buffer), 0,
+                                (struct sockaddr *)&source_address, &source_length);
 
             if (received > 0)
             {
@@ -475,6 +618,11 @@ static void udp_task(void *param)
             }
         }
 
+        (void)xEventGroupClearBits(s_udp_events, UDP_EVENT_READY);
+        if (!data_transport_is_tcp())
+        {
+            (void)xEventGroupWaitBits(s_udp_events, UDP_EVENT_TX_IDLE, pdFALSE, pdTRUE, portMAX_DELAY);
+        }
         close_socket(&s_udp_socket);
         vTaskDelay(pdMS_TO_TICKS(SOCKET_RETRY_DELAY_MS));
     }
@@ -484,23 +632,15 @@ int socket_tasks_start(void)
 {
     TaskHandle_t udp_task_handle = NULL;
 
-    if (s_tcp_events != NULL)
+    if (s_socket_tasks_started != 0)
     {
         return 0;
     }
 
-    if (!tcp_send_config_valid())
+    if (!data_send_config_valid())
     {
         return -1;
     }
-
-    //PRINTF("[TCP] Send config: %u sends/s, %u bytes/send, %u bytes/frame, %u frames/send, timeout=%u ms, retries=%u\r\n",
-           //(unsigned int)s_tcp_sends_per_second,
-           //(unsigned int)s_tcp_bytes_per_send,
-           //(unsigned int)s_tcp_chunk_size_bytes,
-           //(unsigned int)(s_tcp_bytes_per_send / s_tcp_chunk_size_bytes),
-           //(unsigned int)s_tcp_send_timeout_ms,
-           //(unsigned int)s_tcp_send_timeout_retries);
 
     if (init_ipv4_address(&s_tcp_server_address, APP_TCP_SERVER_IP, APP_TCP_SERVER_PORT) != 0)
     {
@@ -521,13 +661,30 @@ int socket_tasks_start(void)
         return -1;
     }
 
+    s_udp_events = xEventGroupCreate();
+    if (s_udp_events == NULL)
+    {
+        PRINTF("[UDP] Failed to create UDP event group\r\n");
+        goto failed;
+    }
+
     PRINTF("[MEM] Before socket tasks: free=%u min=%u\r\n", (unsigned int)xPortGetFreeHeapSize(),
            (unsigned int)xPortGetMinimumEverFreeHeapSize());
-
-    if (xTaskCreate(tcp_tx_task, "tcp_tx", TCP_TX_TASK_STACK_DEPTH, NULL, SOCKET_TASK_PRIORITY,
-                    &s_tcp_tx_task) != pdPASS)
+    if (data_transport_is_tcp())
     {
-        PRINTF("[ERROR] Failed to create TCP transmit task\r\n");
+        PRINTF("[DATA] Transport=TCP peer=%s:%u\r\n", APP_TCP_SERVER_IP,
+               (unsigned int)APP_TCP_SERVER_PORT);
+    }
+    else
+    {
+        PRINTF("[DATA] Transport=UDP peer=%s:%u\r\n", APP_UDP_PEER_IP,
+               (unsigned int)APP_UDP_PEER_PORT);
+    }
+
+    if (xTaskCreate(data_tx_task, "data_tx", DATA_TX_TASK_STACK_DEPTH, NULL, SOCKET_TASK_PRIORITY,
+                    &s_data_tx_task) != pdPASS)
+    {
+        PRINTF("[ERROR] Failed to create data transmit task\r\n");
         goto failed;
     }
 
@@ -553,6 +710,7 @@ int socket_tasks_start(void)
 
     PRINTF("[MEM] After socket tasks: free=%u min=%u\r\n", (unsigned int)xPortGetFreeHeapSize(),
            (unsigned int)xPortGetMinimumEverFreeHeapSize());
+    s_socket_tasks_started = 1;
     return 0;
 
 failed:
@@ -568,13 +726,21 @@ failed:
         vTaskDelete(s_tcp_rx_task);
         s_tcp_rx_task = NULL;
     }
-    if (s_tcp_tx_task != NULL)
+    if (s_data_tx_task != NULL)
     {
-        vTaskDelete(s_tcp_tx_task);
-        s_tcp_tx_task = NULL;
+        vTaskDelete(s_data_tx_task);
+        s_data_tx_task = NULL;
     }
-    vEventGroupDelete(s_tcp_events);
-    s_tcp_events = NULL;
+    if (s_tcp_events != NULL)
+    {
+        vEventGroupDelete(s_tcp_events);
+        s_tcp_events = NULL;
+    }
+    if (s_udp_events != NULL)
+    {
+        vEventGroupDelete(s_udp_events);
+        s_udp_events = NULL;
+    }
     return -1;
 }
 
