@@ -3624,21 +3624,6 @@
         </file>
     </group>
     <group>
-        <name>doc</name>
-        <file>
-            <name>$PROJ_DIR$\..\examples_shared_readme.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\readme.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\readme_modules.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\wifi_examples_readme.md</name>
-        </file>
-    </group>
-    <group>
         <name>drivers</name>
         <group>
             <name>freertos</name>
@@ -4679,10 +4664,10 @@
             <name>$PROJ_DIR$\..\hardware_init.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\lwipopts.h</name>
+            <name>$PROJ_DIR$\..\lwiphooks.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\lwiphooks.h</name>
+            <name>$PROJ_DIR$\..\lwipopts.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\lwippools.h</name>

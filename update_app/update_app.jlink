@@ -1,0 +1,11 @@
+device RW612
+si SWD
+speed 4000
+connect
+r
+h
+loadfile nano_test.bin 0x08000000
+verifybin nano_test.bin 0x08000000
+r
+g
+q

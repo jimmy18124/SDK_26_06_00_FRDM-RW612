@@ -1,0 +1,2 @@
+WLAN Driver Version   : v1.3.r49.p7
+WLAN Firmware Version : rw610w-V2, IMU, FP99, 18.99.6.p12, PVE_FIX 1

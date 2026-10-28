@@ -91,6 +91,7 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
 
     switch (reason)
     {
+        /* WLAN 连接管理器初始化成功，已经可以执行扫描、连接和注册 CLI 命令。 */
         case WLAN_REASON_INITIALIZED:
             (void)PRINTF("app_cb: WLAN initialized\r\n");
             printSeparator();
@@ -159,12 +160,15 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             help_command(0, NULL);
             printSeparator();
             break;
+        /* WLAN 连接管理器初始化失败，当前不能执行扫描或连接操作。 */
         case WLAN_REASON_INITIALIZATION_FAILED:
             (void)PRINTF("app_cb: WLAN: initialization failed\r\n");
             break;
+        /* Station 已完成 802.11 认证，当前状态为 WLAN_ASSOCIATED，尚未表示已经获得 IP。 */
         case WLAN_REASON_AUTH_SUCCESS:
             (void)PRINTF("app_cb: WLAN: authenticated to network\r\n");
             break;
+        /* Station 已成功连接到 AP；随后读取当前 SSID、IPv4 地址和有效的 IPv6 地址。 */
         case WLAN_REASON_SUCCESS:
             (void)PRINTF("app_cb: WLAN: connected to network\r\n");
             ret = wlan_get_address(&addr);
@@ -203,12 +207,15 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
 #endif
             auth_fail = 0;
             break;
+        /* 连接流程失败，但不是明确的“找不到网络”或“认证失败”原因。 */
         case WLAN_REASON_CONNECT_FAILED:
             (void)PRINTF("app_cb: WLAN: connect failed\r\n");
             break;
+        /* 扫描结果中没有找到正在连接的 SSID/BSSID，连接管理器回到断开状态。 */
         case WLAN_REASON_NETWORK_NOT_FOUND:
             (void)PRINTF("app_cb: WLAN: network not found\r\n");
             break;
+        /* AP 认证失败，常见原因是密码错误或安全配置不匹配；连续失败三次后主动断开。 */
         case WLAN_REASON_NETWORK_AUTH_FAILED:
             (void)PRINTF("app_cb: WLAN: network authentication failed\r\n");
             auth_fail++;
@@ -219,23 +226,32 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
                 auth_fail = 0;
             }
             break;
+        /* DHCP 成功获得或续租 IPv4 地址；此时网络地址配置已经完成。 */
         case WLAN_REASON_ADDRESS_SUCCESS:
             (void)PRINTF("network mgr: DHCP new lease\r\n");
             break;
+        /* 未能获得 IP 地址，或 TCP/IP 地址配置失败/因 DHCP 错误丢失。 */
         case WLAN_REASON_ADDRESS_FAILED:
             (void)PRINTF("app_cb: failed to obtain an IP address\r\n");
             break;
+        /* 用户主动断开，或取消了正在进行的连接操作；不是无线链路自然丢失。 */
         case WLAN_REASON_USER_DISCONNECT:
             (void)PRINTF("app_cb: disconnected\r\n");
             auth_fail = 0;
             break;
+        /* 已连接的 Station 丢失与当前 AP 的无线链路，data 可能携带 802.11 断开原因码。 */
         case WLAN_REASON_LINK_LOST:
             (void)PRINTF("app_cb: WLAN: link lost\r\n");
             break;
+        /* 收到 AP 的信道切换通告，当前网络即将或已经切换到新的信道。 */
         case WLAN_REASON_CHAN_SWITCH:
             (void)PRINTF("app_cb: WLAN: channel switch\r\n");
             break;
+        /* WPS 网络断开，或 WPS 连接过程被取消；当前回调不做额外处理。 */
+        case WLAN_REASON_WPS_DISCONNECT:
+            break;
 #if CONFIG_NXP_WIFI_SOFTAP_SUPPORT
+        /* SoftAP/UAP 启动成功；本示例随后启动 DHCP Server，为接入客户端分配地址。 */
         case WLAN_REASON_UAP_SUCCESS:
             (void)PRINTF("app_cb: WLAN: UAP Started\r\n");
             ret = wlan_get_current_uap_network_ssid(ssid);
@@ -260,6 +276,7 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             }
             printSeparator();
             break;
+        /* 客户端已经关联到 SoftAP 的 BSS；data 指向客户端 MAC 地址。 */
         case WLAN_REASON_UAP_CLIENT_ASSOC:
             (void)PRINTF("app_cb: WLAN: UAP a Client Associated\r\n");
             printSeparator();
@@ -268,6 +285,7 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             (void)PRINTF("Associated with Soft AP\r\n");
             printSeparator();
             break;
+        /* 客户端已完成认证并连接到 SoftAP；data 指向客户端 MAC 地址。 */
         case WLAN_REASON_UAP_CLIENT_CONN:
             (void)PRINTF("app_cb: WLAN: UAP a Client Connected\r\n");
             printSeparator();
@@ -276,6 +294,7 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             (void)PRINTF("Connected with Soft AP\r\n");
             printSeparator();
             break;
+        /* 客户端离开或被取消关联；data 指向 wlan_uap_client_disassoc_t，包含 MAC 和 reason_code。 */
         case WLAN_REASON_UAP_CLIENT_DISSOC:
             printSeparator();
             (void)PRINTF("app_cb: WLAN: UAP a Client Dissociated:");
@@ -285,6 +304,13 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             (void)PRINTF("%d\r\n", disassoc_resp->reason_code);
             printSeparator();
             break;
+        /* SoftAP/UAP 启动失败；当前回调不做额外处理。 */
+        case WLAN_REASON_UAP_START_FAILED:
+            break;
+        /* SoftAP/UAP 停止失败；当前回调不做额外处理。 */
+        case WLAN_REASON_UAP_STOP_FAILED:
+            break;
+        /* SoftAP/UAP 已停止；本示例同时停止 SoftAP 使用的 DHCP Server。 */
         case WLAN_REASON_UAP_STOPPED:
             (void)PRINTF("app_cb: WLAN: UAP Stopped\r\n");
             printSeparator();
@@ -297,26 +323,42 @@ int wlan_event_callback(enum wlan_event_reason reason, void *data)
             printSeparator();
             break;
 #endif /* CONFIG_NXP_WIFI_SOFTAP_SUPPORT */
+        /* WLAN 进入省电模式；data 在底层可能表示 IEEE、Deep Sleep 或 WNM 省电类型。 */
         case WLAN_REASON_PS_ENTER:
             break;
+        /* WLAN 退出省电模式；data 在底层可能表示对应的省电类型。 */
         case WLAN_REASON_PS_EXIT:
             break;
+        /* Station 的 RSSI 低于订阅阈值；开启漫游时可能由连接管理器内部处理。 */
         case WLAN_REASON_RSSI_LOW:
 #if CONFIG_SUBSCRIBE_EVENT_SUPPORT
+        /* Station 的 RSSI 高于订阅阈值。 */
         case WLAN_REASON_RSSI_HIGH:
+        /* Station 的 SNR 低于订阅阈值。 */
         case WLAN_REASON_SNR_LOW:
+        /* Station 的 SNR 高于订阅阈值。 */
         case WLAN_REASON_SNR_HIGH:
+        /* Station 达到订阅配置的最大失败次数。 */
         case WLAN_REASON_MAX_FAIL:
+        /* Station 在订阅周期内未收到足够的 Beacon。 */
         case WLAN_REASON_BEACON_MISSED:
+        /* 数据包接收 RSSI 低于订阅阈值。 */
         case WLAN_REASON_DATA_RSSI_LOW:
+        /* 数据包接收 RSSI 高于订阅阈值。 */
         case WLAN_REASON_DATA_RSSI_HIGH:
+        /* 数据包接收 SNR 低于订阅阈值。 */
         case WLAN_REASON_DATA_SNR_LOW:
+        /* 数据包接收 SNR 高于订阅阈值。 */
         case WLAN_REASON_DATA_SNR_HIGH:
+        /* 链路质量达到订阅条件，可能涉及 SNR、速率或发送延迟。 */
         case WLAN_REASON_LINK_QUALITY:
+        /* Beacon 即将丢失，表示无线链路质量正在恶化。 */
         case WLAN_REASON_PRE_BEACON_LOST:
 #endif
             break;
+        /* Wi-Fi 固件进入挂起/卡死状态；本分支当前只打印事件，不执行复位。 */
         case WLAN_REASON_FW_HANG:
+        /* Wi-Fi 固件已经完成复位；与 FW_HANG 共用处理分支，仅打印事件编号。 */
         case WLAN_REASON_FW_RESET:
 #ifdef RW610
             (void)PRINTF("app_cb: WLAN: FW hang Event: %d\r\n", reason);
@@ -436,7 +478,7 @@ int main(void)
 #endif
 
     printSeparator();
-    (void)PRINTF("wifi cli demo\r\n");
+    (void)PRINTF("Nano RW612 Test\r\n");
     printSeparator();
 
     (void)OSA_TaskCreate((osa_task_handle_t)task_main_Handle, OSA_TASK(task_main), NULL);

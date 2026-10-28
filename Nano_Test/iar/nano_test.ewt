@@ -4746,21 +4746,6 @@
         </file>
     </group>
     <group>
-        <name>doc</name>
-        <file>
-            <name>$PROJ_DIR$\..\examples_shared_readme.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\readme.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\readme_modules.md</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\wifi_examples_readme.md</name>
-        </file>
-    </group>
-    <group>
         <name>drivers</name>
         <group>
             <name>freertos</name>
@@ -5801,6 +5786,9 @@
             <name>$PROJ_DIR$\..\hardware_init.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\lwiphooks.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\lwipopts.h</name>
         </file>
         <file>
@@ -6038,6 +6026,12 @@
             <name>port</name>
             <group>
                 <name>net</name>
+                <group>
+                    <name>hooks</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\middleware\wifi_nxp\port\net\hooks\lwip_default_hooks.c</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\middleware\wifi_nxp\port\net\net.c</name>
                 </file>

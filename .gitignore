@@ -20,3 +20,18 @@
 **/iar/**/*.sim
 **/iar/**/*.map
 **/iar/**/*.bin
+
+# Generated application and firmware packages
+**/dist/
+update_app/*.bin
+
+# Python-generated files
+**/__pycache__/
+*.py[cod]
+**/logs/
+**/build/
+
+# Local downloaded network tools
+tools/he-net-network-tools/
+tools/iperf-2.1.9/
+tools/tp-link-8811cu-driver/

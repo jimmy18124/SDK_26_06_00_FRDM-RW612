@@ -73,7 +73,7 @@ static void main_task(void *param)
 
     (void)param;
 
-    PRINTF("Nano_Test starting\r\n");
+    PRINTF("Nano_Test starting C5\r\n");
     print_separator();
 
     result = WPL_Init();
@@ -99,7 +99,9 @@ static void main_task(void *param)
     }
     PRINTF("[WIFI] SoftAP max clients: %u\r\n", (unsigned int)APP_SOFTAP_MAX_CLIENTS);
 
-#if 0
+    wlan_version_extended();
+    
+#if 1
     channel  = 0U;
     acs_band = WPL_AP_ACS_BAND_5GHZ;
     PRINTF("[WIFI] Starting SoftAP '%s', 5 GHz auto channel\r\n", APP_SOFTAP_SSID);
