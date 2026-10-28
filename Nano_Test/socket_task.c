@@ -39,8 +39,9 @@ static TaskHandle_t s_tcp_rx_task;
 static const uint32_t s_tcp_sends_per_second = 20U;
 static const size_t s_tcp_bytes_per_send = 100U * 1024U;
 static const size_t s_tcp_chunk_size_bytes = 1U * 1024U;
-static const uint32_t s_tcp_send_timeout_ms = 3000U;
-static const uint32_t s_tcp_send_timeout_retries = 3U;
+static const uint32_t s_tcp_send_timeout_ms = 1000U;
+static const uint32_t s_tcp_send_timeout_retries = 30U;
+static const uint32_t s_tcp_max_catch_up_blocks = 20U;
 static const uint8_t s_tcp_frame_header[4] = {0xA0U, 0xB0U, 0xC0U, 0xD0U};
 static const uint8_t s_tcp_frame_tail[4] = {0xAFU, 0xBFU, 0xCFU, 0xDFU};
 static uint8_t s_tcp_transmit_buffer[TCP_SEND_BUFFER_CAPACITY];
@@ -248,15 +249,16 @@ static void tcp_tx_task(void *param)
 
     for (;;)
     {
+        TickType_t last_wake_tick;
         uint32_t sends_completed = 0U;
+        uint32_t catch_up_blocks = 0U;
 
         (void)xEventGroupSetBits(s_tcp_events, TCP_EVENT_TX_IDLE);
         (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        last_wake_tick = xTaskGetTickCount();
 
         while (tcp_connection_active())
         {
-            TickType_t block_start_tick = xTaskGetTickCount();
-
             if (send_tcp_block(s_tcp_socket, block_index) != 0)
             {
                 if (tcp_connection_active())
@@ -278,12 +280,24 @@ static void tcp_tx_task(void *param)
             }
 
             {
-                TickType_t elapsed_ticks = xTaskGetTickCount() - block_start_tick;
+                TickType_t next_wake_tick = last_wake_tick + send_interval_ticks;
+                TickType_t now_tick = xTaskGetTickCount();
 
-                if (elapsed_ticks < send_interval_ticks)
+                if ((int32_t)(now_tick - next_wake_tick) > 0)
                 {
-                    vTaskDelay(send_interval_ticks - elapsed_ticks);
+                    catch_up_blocks++;
+                    if (catch_up_blocks > s_tcp_max_catch_up_blocks)
+                    {
+                        last_wake_tick = now_tick;
+                        catch_up_blocks = 0U;
+                    }
                 }
+                else
+                {
+                    catch_up_blocks = 0U;
+                }
+
+                vTaskDelayUntil(&last_wake_tick, send_interval_ticks);
             }
         }
     }
