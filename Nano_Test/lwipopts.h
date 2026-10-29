@@ -217,7 +217,8 @@ void sys_mark_tcpip_thread(void);
 
 #if CONFIG_NETWORK_HIGH_PERF
 #undef MEM_SIZE
-#define MEM_SIZE (40 * 1024)
+/* Headroom for stack-owned pbufs queued by the high-rate UDP sender. */
+#define MEM_SIZE (64 * 1024)
 #endif
 
 /*
@@ -552,11 +553,10 @@ u32_t lwip_rand(void);
 #define LWIP_RAND() lwip_rand()
 #endif
 
-#ifndef RW610
+/* Copy socket datagrams into stack-owned pbufs before Wi-Fi queues them. */
 #define LWIP_NETIF_TX_SINGLE_PBUF 1
-#if LWIP_NETIF_TX_SINGLE_PBUF
+#if LWIP_NETIF_TX_SINGLE_PBUF && !defined(RW610)
 #define PBUF_LINK_ENCAPSULATION_HLEN 26
-#endif
 #endif
 
 #define LWIP_NUM_NETIF_CLIENT_DATA 2

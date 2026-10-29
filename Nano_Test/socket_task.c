@@ -17,6 +17,9 @@
 #define UDP_TASK_STACK_DEPTH          512U
 #define SOCKET_RETRY_DELAY_MS         1000U
 #define SOCKET_RECEIVE_TIMEOUT_MS     500U
+#define UDP_SEND_RETRY_DELAY_MS       1U
+#define UDP_SEND_BURST_FRAMES         20U
+#define UDP_SEND_BURST_DELAY_MS       2U
 #define SOCKET_RECEIVE_BUFFER_SIZE    1500U
 #define DATA_SEND_BUFFER_CAPACITY     (4U * 1024U)
 #define DATA_FRAME_OVERHEAD_BYTES     16U
@@ -259,7 +262,7 @@ static int send_tcp_block(int socket_fd, uint32_t block_index)
 
 static int send_udp_frame(int socket_fd, const void *data, size_t length)
 {
-    uint32_t timeout_retries = 0U;
+    uint32_t retry_count = 0U;
 
     for (;;)
     {
@@ -274,13 +277,20 @@ static int send_udp_frame(int socket_fd, const void *data, size_t length)
         {
             continue;
         }
-        if ((sent < 0) && (errno == EWOULDBLOCK) &&
-            (timeout_retries < s_data_send_timeout_retries))
+        if ((sent < 0) && ((errno == ENOMEM) || (errno == EWOULDBLOCK)) &&
+            (retry_count < s_data_send_timeout_retries))
         {
-            timeout_retries++;
-            PRINTF("[UDP] Send backpressure; retry %u/%u\r\n",
-                   (unsigned int)timeout_retries,
-                   (unsigned int)s_data_send_timeout_retries);
+            int send_errno = errno;
+
+            retry_count++;
+            if ((retry_count == 1U) || (retry_count == s_data_send_timeout_retries))
+            {
+                PRINTF("[UDP] Send backpressure, errno=%d; retry %u/%u\r\n",
+                       send_errno,
+                       (unsigned int)retry_count,
+                       (unsigned int)s_data_send_timeout_retries);
+            }
+            vTaskDelay(pdMS_TO_TICKS(UDP_SEND_RETRY_DELAY_MS));
             continue;
         }
 
@@ -304,6 +314,11 @@ static int send_udp_block(int socket_fd, uint32_t block_index)
         if (send_udp_frame(socket_fd, s_data_transmit_buffer, s_data_chunk_size_bytes) != 0)
         {
             return -1;
+        }
+
+        if (((frame_index + 1U) % UDP_SEND_BURST_FRAMES) == 0U)
+        {
+            vTaskDelay(pdMS_TO_TICKS(UDP_SEND_BURST_DELAY_MS));
         }
     }
 

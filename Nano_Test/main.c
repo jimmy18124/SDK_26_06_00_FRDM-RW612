@@ -74,6 +74,7 @@ static void main_task(void *param)
     (void)param;
 
     PRINTF("Nano_Test starting C5\r\n");
+    PRINTF("Build time: %s %s\r\n", __DATE__, __TIME__);
     print_separator();
 
     result = WPL_Init();
@@ -168,7 +169,7 @@ int main(void)
     result = xTaskCreate(main_task, "main", MAIN_TASK_STACK_DEPTH, NULL, MAIN_TASK_PRIORITY, NULL);
     assert(result == pdPASS);
 
-    vTaskStartScheduler();
+    vTaskStartScheduler(); 
 
     for (;;)
     {
